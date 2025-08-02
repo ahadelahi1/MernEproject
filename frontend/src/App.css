@@ -1,0 +1,32 @@
+.admin-panel {
+  height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #343a40;
+  color: #fff;
+  padding-top: 20px;
+}
+
+.sidebar a {
+  color: #fff;
+  padding: 10px 20px;
+  display: block;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  background-color: #495057;
+}
+
+.main-content {
+  flex: 1;
+  background-color: #f8f9fa;
+}
+
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  padding: 10px 20px;
+}
