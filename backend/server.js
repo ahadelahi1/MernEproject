@@ -4,6 +4,7 @@ require("dotenv").config();
 require("./Connection/db");
 
 const expoRoutes = require("./Routes/expoRoutes");
+const userroutes = require("./Routes/userroutes");
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/expos", expoRoutes);
+app.use("/api/user", expoRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

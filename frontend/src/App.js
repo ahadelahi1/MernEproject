@@ -7,8 +7,16 @@ import AddExpo from './pages/AddExpo';
 import EditExpo from './pages/EditExpo';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import RegisterData from './register/Register';
+import Login from './register/Login';
+import ForgetPassword from './register/ForgetPassword';
 
 function App() {
+  let [newroute ,setnewroute]=useState("");
+
+
+
+
   return (
     <Router>
       <div className="admin-panel d-flex">
@@ -20,6 +28,11 @@ function App() {
               <Route path="/expos" element={<ExpoList />} />
               <Route path="/expos/add" element={<AddExpo />} />
               <Route path="/expos/edit/:id" element={<EditExpo />} />
+              <Route path="/register" element={<RegisterData />} />
+              <Route path= "/login" element={<Login/>}/>
+              <Route path= "/fp" element={<ForgetPassword/>}/>
+              <Route path ='/fp' element ={<ForgotPAssword/>} />
+              <Route path ='/re/:token' element ={<ResetPassword/>} />
             </Routes>
           </div>
         </div>
