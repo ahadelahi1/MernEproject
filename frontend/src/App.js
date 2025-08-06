@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import RegisterData from './register/Register';
 import Login from './register/Login';
 import ForgetPassword from './register/ForgetPassword';
+import ResetPassword from './register/ResetPassword';
 
 function App() {
   let [newroute ,setnewroute]=useState("");
@@ -31,7 +32,7 @@ function App() {
               <Route path="/register" element={<RegisterData />} />
               <Route path= "/login" element={<Login/>}/>
               <Route path= "/fp" element={<ForgetPassword/>}/>
-              <Route path ='/fp' element ={<ForgotPAssword/>} />
+
               <Route path ='/re/:token' element ={<ResetPassword/>} />
             </Routes>
           </div>

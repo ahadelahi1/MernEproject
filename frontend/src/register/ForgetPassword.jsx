@@ -9,7 +9,7 @@ export default function ForgotPAssword() {
 
   async function Forgot_Password() {
     try {
-      await axios.post("http://localhost:4000/ht/forgot", {
+      await axios.post("http://localhost:4000/api/user/forgot", {
         e: email
       }).then((a) => {
         toast.success(a.data.msg)

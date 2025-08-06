@@ -4,14 +4,20 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../Models/User");
 require("dotenv").config();
-
+let secure_info = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSKEY
+  }
+});
 let all_func = {
   Register: async function (req, res) {
     try {
       let { name, email, password, age, address, role, gender } = req.body;
 
       // Duplicate Email Check
-      const exist = await User.findOne({ email });
+      const exist = await User.findOne({ email:email });
       if (exist) {
         return res.status(400).json({ msg: "Email already exists" });
       }
@@ -34,13 +40,7 @@ let all_func = {
       await save_data.save();
 
       // ✅ Nodemailer Setup
-      let secure_info = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.PASSKEY
-        }
-      });
+     
 
       // ✅ Email Body
       let EmailBodyInfo = {
@@ -89,7 +89,7 @@ let all_func = {
       console.log(error.message)
       
     }
-  }
+  },
   forget_password : async function(req,res){
     try {
       let {e} = req.body
@@ -107,7 +107,7 @@ let all_func = {
         html :`<p>Hi ${email_check.name} <br/> Your Password Reset Link is given below 
         <a href=${url}>Click Here<a></p>`
       }
-      datas.sendMail(email_body, function(e,i){
+      secure_info.sendMail(email_body, function(e,i){
         if(e){
           console.log(e)
         }
@@ -135,9 +135,10 @@ let all_func = {
       
     }
   }
-}
 
 }
+
+
 
 
         

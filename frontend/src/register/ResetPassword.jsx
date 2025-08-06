@@ -15,7 +15,7 @@ let nav = useNavigate()
             toast.error("Conform Password must match with Password")
             return
         }
-        await axios.put(`http://localhost:4000/ht/reset/${token}`,{
+        await axios.put(`http://localhost:4000/api/user/reset/${token}`,{
             pswd : pswd
         }).then((a) => {
             toast.success(a.data.msg)

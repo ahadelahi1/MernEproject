@@ -12,8 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/expos", expoRoutes);
-app.use("/api/user", expoRoutes);
+app.use("/api/user/", userroutes);
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
