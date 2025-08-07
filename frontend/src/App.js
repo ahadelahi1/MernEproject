@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import ExpoList from './pages/ExpoList';
@@ -12,34 +12,46 @@ import Login from './register/Login';
 import ForgetPassword from './register/ForgetPassword';
 import ResetPassword from './register/ResetPassword';
 
-function App() {
-  let [newroute ,setnewroute]=useState("");
+// ✅ Yeh wala component router ke andar hona chahiye
+function AppContent() {
+  const location = useLocation();
 
-
-
+  // ✅ Sidebar hide karna hai login/register pages par
+  const hideSidebarRoutes = ['/register', '/login', '/fp', '/re'];
+  const shouldHideSidebar = hideSidebarRoutes.some(route =>
+    location.pathname.startsWith(route)
+  );
 
   return (
-    <Router>
-      <div className="admin-panel d-flex">
-        <Sidebar />
-        <div className="main-content flex-grow-1">
-          <div className="p-4">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/expos" element={<ExpoList />} />
-              <Route path="/expos/add" element={<AddExpo />} />
-              <Route path="/expos/edit/:id" element={<EditExpo />} />
-              <Route path="/register" element={<RegisterData />} />
-              <Route path= "/login" element={<Login/>}/>
-              <Route path= "/fp" element={<ForgetPassword/>}/>
+    <div className="admin-panel d-flex">
+      {/* ✅ Conditional Sidebar */}
+      {!shouldHideSidebar && <Sidebar />}
 
-              <Route path ='/re/:token' element ={<ResetPassword/>} />
-            </Routes>
-          </div>
+      <div className="main-content flex-grow-1">
+        <div className="p-4">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/expos" element={<ExpoList />} />
+            <Route path="/expos/add" element={<AddExpo />} />
+            <Route path="/expos/edit/:id" element={<EditExpo />} />
+            <Route path="/register" element={<RegisterData />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/fp" element={<ForgetPassword />} />
+            <Route path="/re/:token" element={<ResetPassword />} />
+          </Routes>
         </div>
       </div>
 
       <ToastContainer position="top-right" autoClose={3000} />
+    </div>
+  );
+}
+
+// ✅ Main App component — sirf Router wrap karta hai
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
