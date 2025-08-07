@@ -1,49 +1,91 @@
+import React, { useState } from 'react';
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBCardImage,
+  MDBInput,
+  MDBIcon,
+} from 'mdb-react-ui-kit';
 import axios from 'axios';
-import React, { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css"
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ResetPassword() {
-  let [pswd, setPswd] = useState("");
-  let [cpswd, setCPswd] = useState("");
-  let {token} = useParams();
-let nav = useNavigate()
-  async function Reset(){
+  const [pswd, setPswd] = useState("");
+  const [cpswd, setCPswd] = useState("");
+  const { token } = useParams();
+  const nav = useNavigate();
+
+  async function Reset() {
     try {
-        if(pswd !== cpswd){
-            toast.error("Conform Password must match with Password")
-            return
-        }
-        await axios.put(`http://localhost:4000/api/user/reset/${token}`,{
-            pswd : pswd
-        }).then((a) => {
-            toast.success(a.data.msg)
-            nav("/log")
-          }).catch((E) => {
-            toast.error(E)
-          })
+      if (pswd !== cpswd) {
+        toast.error("Confirm Password must match with Password");
+        return;
+      }
+
+      await axios.put(`http://localhost:4000/api/user/reset/${token}`, {
+        pswd: pswd
+      }).then((res) => {
+        toast.success(res.data.msg);
+        nav("/log");
+      }).catch((err) => {
+        toast.error(err.response?.data?.msg || "Something went wrong");
+      });
+
     } catch (error) {
-        toast.error(error.response?.data.msg)
+      toast.error(error.response?.data?.msg || "Server Error");
     }
   }
 
   return (
-    <div>
-      <div><div className="register-background">
-        <ToastContainer />
-        <div className="form-container">
-          <h2>Reset Password</h2>
-          <label htmlFor="email">Password*</label>
-          <input type="text" id="email" name="email" value={pswd} onChange={(e) => setPswd(e.target.value)} required />
+    <MDBContainer fluid style={{ backgroundColor: 'white' }}>
+      <ToastContainer />
+      <MDBCard className='text-black m-5'>
+        <MDBCardBody>
+          <MDBRow>
+            <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
 
-          <label htmlFor="email">Confirm Password*</label>
-          <input type="text" id="email" name="email" value={cpswd} onChange={(e) => setCPswd(e.target.value)} required />
+              <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Reset Password</p>
 
+              <div className="d-flex flex-row align-items-center mb-4">
+                <MDBIcon fas icon="lock me-3" size='lg' />
+                <MDBInput
+                  label='New Password'
+                  id='form5'
+                  type='password'
+                  value={pswd}
+                  onChange={(e) => setPswd(e.target.value)}
+                />
+              </div>
 
-          <button type="button" className="submit-btn" onClick={Reset} >Reset</button>
-        </div>
-      </div></div>
-    </div>
-  )
+              <div className="d-flex flex-row align-items-center mb-4">
+                <MDBIcon fas icon="key me-3" size='lg' />
+                <MDBInput
+                  label='Confirm Password'
+                  id='form6'
+                  type='password'
+                  value={cpswd}
+                  onChange={(e) => setCPswd(e.target.value)}
+                />
+              </div>
+
+              <MDBBtn className='mb-4' size='lg' onClick={Reset}>Reset</MDBBtn>
+
+            </MDBCol>
+
+            <MDBCol md='10' lg='6' className='order-1 order-lg-2 d-flex align-items-center'>
+              <MDBCardImage
+                src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp'
+                fluid />
+            </MDBCol>
+          </MDBRow>
+        </MDBCardBody>
+      </MDBCard>
+    </MDBContainer>
+  );
 }

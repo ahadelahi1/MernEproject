@@ -68,9 +68,9 @@ function RegisterData() {
   };
 
   return (
-    <MDBContainer fluid>
+    <MDBContainer fluid style={{ backgroundColor: 'white' }}>
       <ToastContainer />
-      <MDBCard className='text-black m-5' style={{ borderRadius: '25px' }}>
+      <MDBCard className='text-black m-5' style={{ backgroundColor: 'white' }} >
         <MDBCardBody>
           <MDBRow>
             <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
