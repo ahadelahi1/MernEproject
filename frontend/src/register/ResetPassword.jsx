@@ -28,7 +28,7 @@ export default function ResetPassword() {
         return;
       }
 
-      await axios.put(`http://localhost:4000/api/user/reset/${token}`, {
+      await axios.post(`http://localhost:4000/api/user/reset/${token}`, {
         pswd: pswd
       }).then((res) => {
         toast.success(res.data.msg);

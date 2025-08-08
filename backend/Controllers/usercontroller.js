@@ -118,23 +118,25 @@ let all_func = {
       res.status(504).json({msg: error.message})
     }
   },
-  reset_password : async function(req,res){
+  reset_password: async function(req, res) {
     try {
-      let {token} = req.params
-      let {pswd} = req.body
-
-      let check_token = jwt.decode(token, process.env.KEY)
-
-      let haspswd = bb.hashSync(pswd,12)
-      
+      let { token } = req.params;
+      let { pswd } = req.body;
+  
+      let check_token = jwt.verify(token, process.env.KEY); // decode → verify
+  
+      let haspswd = bcrypt.hashSync(pswd, 12);
+  
       await User.findByIdAndUpdate(check_token.id, {
         password: haspswd
-      })
+      });
+  
+      res.status(200).json({ msg: "Password reset successful" }); // ADD THIS
     } catch (error) {
-      res.status(504).json({msg: error.message})
-      
+      res.status(504).json({ msg: error.message });
     }
   }
+  
 
 }
 
