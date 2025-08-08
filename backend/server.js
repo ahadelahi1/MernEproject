@@ -1,15 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-require("./Connection/db"); 
 
+const connectDB = require("./Connection/db"); 
+connectDB(); 
 const hallRoutes = require('./Routes/hallRoutes');
 const expoRoutes = require("./Routes/expoRoutes");
 const boothRoutes = require("./Routes/boothRoutes");
 const adminRoutes = require('./Routes/adminRoutes');
 const userroutes = require('./Routes/userroutes');
-const { createDefaultAdmin } = require('./Controllers/adminController'); // âœ… added
-
+let {createDefaultAdmin} =  require("./Controllers/adminController");
 const app = express();
 
 app.use(cors());
@@ -20,10 +20,8 @@ app.use("/api/expos", expoRoutes);
 app.use('/api/halls', hallRoutes);
 app.use('/api/booths', boothRoutes);
 app.use("/api/user/", userroutes);
-// ðŸ” Create default admin
-//createDefaultAdmin(); // âœ… call here
+
+createDefaultAdmin(); 
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-

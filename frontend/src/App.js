@@ -18,6 +18,7 @@ import RegisterData from './register/Register';
 import Login from './register/Login';
 import ForgetPassword from './register/ForgetPassword';
 import ResetPassword from './register/ResetPassword';
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 // ✅ Yeh wala component router ke andar hona chahiye
 function AppContent() {
