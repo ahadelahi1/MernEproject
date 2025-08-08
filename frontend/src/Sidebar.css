@@ -1,0 +1,70 @@
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #212529, #343a40);
+  color: #fff;
+  padding: 25px 15px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
+  position: fixed;
+}
+
+.brand-name {
+  color: #ffc107;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.4rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar-link:hover {
+  background-color: #495057;
+}
+
+.dropdown-section {
+  margin-top: 10px;
+  position: relative;
+}
+
+.dropdown-section input[type="checkbox"] {
+  display: none;
+}
+
+.dropdown-label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-content {
+  display: none;
+  flex-direction: column;
+  margin-left: 20px;
+  margin-top: 5px;
+}
+
+.dropdown-section input[type="checkbox"]:checked ~ .dropdown-content {
+  display: flex;
+}
+
+.dropdown-item-custom {
+  padding: 10px 15px;
+  color: #adb5bd;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.dropdown-item-custom:hover {
+  background-color: #495057;
+  color: #fff;
+}

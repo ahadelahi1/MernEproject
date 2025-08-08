@@ -14,7 +14,7 @@ const EditExpo = () => {
   const [description, setDescription] = useState('');
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/expos/single/${id}`).then((res) => {
+    axios.get(`http://localhost:4000/api/expos/single/${id}`).then((res) => {
       const expo = res.data;
       setTitle(expo.title);
       setLocation(expo.location);
@@ -30,7 +30,7 @@ const EditExpo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/expos/update/${id}`, {
+      await axios.put(`http://localhost:4000/api/expos/update/${id}`, {
         title, location, theme, startDate, endDate, description
       });
       toast.success("Expo updated successfully!");
@@ -41,37 +41,79 @@ const EditExpo = () => {
   };
 
   return (
-    <div>
-      <h2>Edit Expo</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-2">
-          <label>Title</label>
-          <input type="text" className="form-control" value={title} onChange={e => setTitle(e.target.value)} required />
+      <div className="expo-form-wrapper">
+      <h2 className="expo-form-heading">Edit Expo</h2>
+      <form onSubmit={handleSubmit} className="expo-form">
+        <div className="row mb-4">
+          <div className="col-md-6">
+            <label className="form-label">Title</label>
+            <input
+              type="text"
+              className="form-control"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div className="col-md-6">
+            <label className="form-label">Location</label>
+            <input
+              type="text"
+              className="form-control"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+            />
+          </div>
         </div>
-        <div className="mb-2">
-          <label>Location</label>
-          <input type="text" className="form-control" value={location} onChange={e => setLocation(e.target.value)} required />
+
+        <div className="row mb-4">
+          <div className="col-md-6">
+            <label className="form-label">Theme</label>
+            <input
+              type="text"
+              className="form-control"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+            />
+          </div>
+          <div className="col-md-3">
+            <label className="form-label">Start Date</label>
+            <input
+              type="date"
+              className="form-control"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="col-md-3">
+            <label className="form-label">End Date</label>
+            <input
+              type="date"
+              className="form-control"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
+          </div>
         </div>
-        <div className="mb-2">
-          <label>Theme</label>
-          <input type="text" className="form-control" value={theme} onChange={e => setTheme(e.target.value)} />
+
+        <div className="mb-4">
+          <label className="form-label">Description</label>
+          <textarea
+            className="form-control"
+            rows="3"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
         </div>
-        <div className="mb-2">
-          <label>Start Date</label>
-          <input type="date" className="form-control" value={startDate} onChange={e => setStartDate(e.target.value)} required />
-        </div>
-        <div className="mb-2">
-          <label>End Date</label>
-          <input type="date" className="form-control" value={endDate} onChange={e => setEndDate(e.target.value)} required />
-        </div>
-        <div className="mb-2">
-          <label>Description</label>
-          <textarea className="form-control" value={description} onChange={e => setDescription(e.target.value)} />
-        </div>
-        <button type="submit" className="btn btn-primary">Update Expo</button>
+
+        <button type="submit" className="btn btn-primary px-5">
+          Update Expo
+        </button>
       </form>
-    </div>
-  );
+    </div>  );
 };
 
 export default EditExpo;

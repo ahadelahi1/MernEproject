@@ -1,7 +1,7 @@
 const Expo = require("../Models/Expo");
 
 const ExpoController = {
-  // ✅ CREATE Expo
+
   Create: async (req, res) => {
     try {
       const { title, location, theme, startDate, endDate, description } = req.body;
@@ -9,11 +9,13 @@ const ExpoController = {
       await expo.save();
       res.status(201).json({ msg: "Expo Created", expo });
     } catch (err) {
+      console.log(err.message);
       res.status(500).json({ msg: err.message });
+
     }
   },
 
-  // ✅ GET ALL Expos
+ 
   GetAll: async (req, res) => {
     try {
       const expos = await Expo.find().sort({ createdAt: -1 });
@@ -23,7 +25,7 @@ const ExpoController = {
     }
   },
 
-  // ✅ GET Single Expo by ID
+
   GetOne: async (req, res) => {
     try {
       const expo = await Expo.findById(req.params.id);
@@ -34,7 +36,6 @@ const ExpoController = {
     }
   },
 
-  // ✅ UPDATE Expo
   Update: async (req, res) => {
     try {
       const { id } = req.params;
@@ -50,7 +51,7 @@ const ExpoController = {
     }
   },
 
-  // ✅ DELETE Expo
+  
   Delete: async (req, res) => {
     try {
       const { id } = req.params;
@@ -61,9 +62,5 @@ const ExpoController = {
     }
   }
 };
-
-
-
-
 
 module.exports = ExpoController;

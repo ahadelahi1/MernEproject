@@ -1,0 +1,50 @@
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.expo-form-wrapper {
+  margin-left: 220px; /* for sidebar */
+  padding: 60px 80px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+.expo-form-heading {
+  font-size: 32px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 40px;
+  border-left: 6px solid#ffc107;
+  padding-left: 15px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #2d2d2d;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 10px 14px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color:#ffc107;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+  outline: none;
+}
+
+.btn-primary {
+  background-color:#ffc107 !important;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  color: black !important;
+}
+
+.btn-primary:hover {
+  background-color:#ffc107 !important;
+}
