@@ -19,6 +19,7 @@ import Login from './register/Login';
 import ForgetPassword from './register/ForgetPassword';
 import ResetPassword from './register/ResetPassword';
 import "bootstrap-icons/font/bootstrap-icons.css";
+import VisitorList from './pages/VisitorList';
 
 // ✅ Yeh wala component router ke andar hona chahiye
 function AppContent() {
@@ -38,7 +39,7 @@ function AppContent() {
       <div className="main-content flex-grow-1">
         <div className="p-4">
           <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/expos" element={<ExpoList />} />
                     <Route path="/expos/add" element={<AddExpo />} />
                     <Route path="/expos/edit/:id" element={<EditExpo />} />
@@ -48,10 +49,11 @@ function AppContent() {
                     <Route path="/add-booth" element={<AddBooth />} />
                     <Route path="/booths" element={<ShowBooths />} />
                     <Route path="/booths/edit/:id" element={<EditBooth />} />
-            <Route path="/register" element={<RegisterData />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/fp" element={<ForgetPassword />} />
-            <Route path="/re/:token" element={<ResetPassword />} />
+                    <Route path="/register" element={<RegisterData />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/fp" element={<ForgetPassword />} />
+                    <Route path="/re/:token" element={<ResetPassword />} />
+                    <Route path="/visitors" element={<VisitorList />} />
           </Routes>
         </div>
       </div>

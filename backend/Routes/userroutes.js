@@ -6,7 +6,7 @@ router.post("/register", all.Register);
 router.post("/login" ,all.Login);
 router.post("/forgot",all.forget_password);
 router.post("/reset/:token",all.reset_password)
-
+router.get("/visitors", all.getVisitors);
 
 
 module.exports = router;

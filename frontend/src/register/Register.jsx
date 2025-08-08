@@ -89,6 +89,7 @@ function RegisterData() {
                 </select>
                 <select className='form-control mb-4' value={role} onChange={(e) => setrole(e.target.value)} required>
                   <option value=''>Select Role</option>
+                   <option value='admin'>Visitor</option>
                   <option value='admin'>Admin</option>
                   <option value='user'>User</option>
                   <option value='vendor'>Vendor</option>

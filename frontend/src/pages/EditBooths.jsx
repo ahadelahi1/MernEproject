@@ -55,7 +55,14 @@ const EditBooth = () => {
         toast.success("Booth updated successfully");
         navigate("/booths");
       })
-      .catch(() => toast.error("Failed to update booth"));
+      .catch((err) => {
+  if (err.response?.data?.message) {
+    toast.error(err.response.data.message);
+  } else {
+    toast.error("Failed to update booth");
+  }
+});
+
   };
 
   return (

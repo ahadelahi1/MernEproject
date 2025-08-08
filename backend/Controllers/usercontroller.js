@@ -118,6 +118,7 @@ let all_func = {
       res.status(504).json({msg: error.message})
     }
   },
+  
   reset_password: async function(req, res) {
     try {
       let { token } = req.params;
@@ -135,7 +136,21 @@ let all_func = {
     } catch (error) {
       res.status(504).json({ msg: error.message });
     }
+  },
+
+getVisitors: async function (req, res) {
+  try {
+    const visitors = await User.find({ role: "user" }).select("-password -__v");
+    res.json(visitors);
+  } catch (error) {
+    console.error("Error fetching visitors:", error);
+    res.status(500).json({ msg: "Failed to fetch visitors", error: error.message });
   }
+},
+
+
+
+  
   
 
 }

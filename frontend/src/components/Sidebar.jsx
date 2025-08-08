@@ -65,7 +65,9 @@ const Sidebar = () => {
       </Link>
     </div>
   </div>
-
+      <Link to="/visitors" className="sidebar-link">
+        <i className="bi bi-people me-2"></i> Visitor List
+      </Link>
 
 
 

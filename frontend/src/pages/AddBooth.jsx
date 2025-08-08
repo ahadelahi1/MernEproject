@@ -39,7 +39,14 @@ const AddBooth = () => {
         toast.success("Booth added successfully");
         setStallNumber(""); setName(""); setCapacity(""); setHallId(""); setAvailability("");
       })
-      .catch(() => toast.error("Failed to add booth"));
+      .catch((err) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    toast.error(err.response.data.message);
+  } else {
+    toast.error("Failed to add booth");
+  }
+});
+
   };
 
   return (

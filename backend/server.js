@@ -10,6 +10,7 @@ const boothRoutes = require("./Routes/boothRoutes");
 const adminRoutes = require('./Routes/adminRoutes');
 const userroutes = require('./Routes/userroutes');
 let {createDefaultAdmin} =  require("./Controllers/adminController");
+
 const app = express();
 
 app.use(cors());
@@ -20,6 +21,7 @@ app.use("/api/expos", expoRoutes);
 app.use('/api/halls', hallRoutes);
 app.use('/api/booths', boothRoutes);
 app.use("/api/user/", userroutes);
+app.use('/api/users', userroutes);
 
 createDefaultAdmin(); 
 

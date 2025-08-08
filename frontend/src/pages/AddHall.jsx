@@ -29,7 +29,14 @@ const AddHall = () => {
         toast.success("Hall added successfully");
         navigate("/halls");
       })
-      .catch(() => toast.error("Error adding hall"));
+      .catch((err) => {
+  if (err.response?.data?.message) {
+    toast.error(err.response.data.message);
+  } else {
+    toast.error("Error adding hall");
+  }
+});
+
   };
 
   return (
