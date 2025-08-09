@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
+import ExhibitorSidebar from './components/ExhibitorSidebar';
 import Dashboard from './pages/Dashboard';
 import ExpoList from './pages/ExpoList';
 import AddExpo from './pages/AddExpo';
@@ -20,40 +21,78 @@ import ForgetPassword from './register/ForgetPassword';
 import ResetPassword from './register/ResetPassword';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import VisitorList from './pages/VisitorList';
+import ExhibitorRegister from './Exhibitor/ExhibitorRegister';
+import ExhibitorLogin from './Exhibitor/ExhibitorLogin';
+import BoothBooking from './Exhibitor/BoothBooking';
+import ExhibitorDashboard from './Exhibitor/ExhibitorDashboard';
+import ExhibitorProfile from './Exhibitor/ExhibitorProfile';
 
-// ✅ Yeh wala component router ke andar hona chahiye
 function AppContent() {
   const location = useLocation();
 
-  // ✅ Sidebar hide karna hai login/register pages par
-  const hideSidebarRoutes = ['/register', '/login', '/fp', '/re'];
-  const shouldHideSidebar = hideSidebarRoutes.some(route =>
+  // Exhibitor specific routes
+  const exhibitorRoutes = [
+    '/exhibitorreg',
+    '/exhibitorlogin',
+    '/booking',
+    '/exhibitordashboard',
+    '/exhibitorprofile'
+  ];
+
+  // Pages jahan koi sidebar nahi dikhana
+  const noSidebarRoutes = [
+    '/register',
+    '/login',
+    '/fp',
+    '/re'
+  ];
+
+  // Show flags
+  const isExhibitorRoute = exhibitorRoutes.some(route =>
     location.pathname.startsWith(route)
   );
 
+  const isNoSidebarRoute = noSidebarRoutes.some(route =>
+    location.pathname.startsWith(route)
+  );
+
+  const showExhibitorSidebar = isExhibitorRoute;
+  const showAdminSidebar = !isExhibitorRoute && !isNoSidebarRoute;
+
   return (
     <div className="admin-panel d-flex">
-      {/* ✅ Conditional Sidebar */}
-      {!shouldHideSidebar && <Sidebar />}
+      {/* Conditional Sidebars */}
+      {showAdminSidebar && <Sidebar />}
+      {showExhibitorSidebar && <ExhibitorSidebar />}
 
       <div className="main-content flex-grow-1">
         <div className="p-4">
           <Routes>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/expos" element={<ExpoList />} />
-                    <Route path="/expos/add" element={<AddExpo />} />
-                    <Route path="/expos/edit/:id" element={<EditExpo />} />
-                    <Route path="/halls/edit/:id" element={<EditHall />} />
-                    <Route path="/halls/add" element={<AddHall />} />
-                    <Route path="/halls" element={<ShowHalls />} />
-                    <Route path="/add-booth" element={<AddBooth />} />
-                    <Route path="/booths" element={<ShowBooths />} />
-                    <Route path="/booths/edit/:id" element={<EditBooth />} />
-                    <Route path="/register" element={<RegisterData />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/fp" element={<ForgetPassword />} />
-                    <Route path="/re/:token" element={<ResetPassword />} />
-                    <Route path="/visitors" element={<VisitorList />} />
+            {/* Admin Routes */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/expos" element={<ExpoList />} />
+            <Route path="/expos/add" element={<AddExpo />} />
+            <Route path="/expos/edit/:id" element={<EditExpo />} />
+            <Route path="/halls/edit/:id" element={<EditHall />} />
+            <Route path="/halls/add" element={<AddHall />} />
+            <Route path="/halls" element={<ShowHalls />} />
+            <Route path="/add-booth" element={<AddBooth />} />
+            <Route path="/booths" element={<ShowBooths />} />
+            <Route path="/booths/edit/:id" element={<EditBooth />} />
+            <Route path="/visitors" element={<VisitorList />} />
+
+            {/* Auth Routes */}
+            <Route path="/register" element={<RegisterData />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/fp" element={<ForgetPassword />} />
+            <Route path="/re/:token" element={<ResetPassword />} />
+
+            {/* Exhibitor Routes */}
+            <Route path="/exhibitorreg" element={<ExhibitorRegister />} />
+            <Route path="/exhibitorlogin" element={<ExhibitorLogin />} />
+            <Route path="/booking" element={<BoothBooking />} />
+            <Route path="/exhibitordashboard" element={<ExhibitorDashboard />} />
+            <Route path="/exhibitorprofile" element={<ExhibitorProfile />} />
           </Routes>
         </div>
       </div>
@@ -63,7 +102,6 @@ function AppContent() {
   );
 }
 
-// ✅ Main App component — sirf Router wrap karta hai
 function App() {
   return (
     <Router>

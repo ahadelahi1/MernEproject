@@ -1,0 +1,149 @@
+/* ExhibitorLogin.css */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.exhibitor-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f0f4f8;
+}
+
+/* Sidebar */
+.exhibitor-sidebar {
+  width: 260px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #004aad;
+  color: white;
+  padding: 30px 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #00337a #004aad;
+}
+
+.exhibitor-sidebar .brand-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  letter-spacing: 1.2px;
+}
+
+/* Main content */
+.exhibitor-main {
+  margin-left: 260px; /* space for sidebar */
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 30px;
+  min-height: 100vh;
+  background-color: #f0f4f8;
+  overflow-y: auto;
+}
+
+/* Form Card */
+.form-card {
+  background: #fff;
+  padding: 40px 50px;
+  border-radius: 14px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Form Title */
+.form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 35px;
+  color: #004aad;
+  letter-spacing: 1.1px;
+}
+
+/* Inputs */
+form input {
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 22px;
+  border: 2px solid #d0d7e3;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #fafafa;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+form input:focus {
+  border-color: #004aad;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(0, 74, 173, 0.35);
+}
+
+/* Button */
+form button {
+  width: 100%;
+  padding: 15px 0;
+  background: #004aad;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.15rem;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  letter-spacing: 0.9px;
+}
+
+form button:hover:not(:disabled) {
+  background: #00337a;
+}
+
+form button:disabled {
+  background: #a1a8c6;
+  cursor: not-allowed;
+}
+
+/* Toastify */
+.Toastify__toast--error {
+  background-color: #d9534f !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.Toastify__toast--success {
+  background-color: #28a745 !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .exhibitor-sidebar {
+    position: relative;
+    width: 100%;
+    padding: 20px 15px;
+  }
+
+  .exhibitor-main {
+    margin-left: 0;
+    padding: 20px 15px;
+  }
+
+  .form-card {
+    padding: 30px 25px;
+  }
+}

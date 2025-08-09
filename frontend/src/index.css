@@ -30,3 +30,10 @@
   border-bottom: 1px solid #dee2e6;
   padding: 10px 20px;
 }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* page-wide scroll hide */
+}
