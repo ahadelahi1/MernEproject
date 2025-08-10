@@ -26,6 +26,8 @@ import ExhibitorLogin from './Exhibitor/ExhibitorLogin';
 import BoothBooking from './Exhibitor/BoothBooking';
 import ExhibitorDashboard from './Exhibitor/ExhibitorDashboard';
 import ExhibitorProfile from './Exhibitor/ExhibitorProfile';
+import ProtectedRoute from './components/ProtectedRoute';
+import ExhibitorList from './pages/ExhibitorList';
 
 function AppContent() {
   const location = useLocation();
@@ -44,10 +46,10 @@ function AppContent() {
     '/register',
     '/login',
     '/fp',
-    '/re'
+    '/re',
+    '/admin-login'
   ];
 
-  // Show flags
   const isExhibitorRoute = exhibitorRoutes.some(route =>
     location.pathname.startsWith(route)
   );
@@ -68,20 +70,52 @@ function AppContent() {
       <div className="main-content flex-grow-1">
         <div className="p-4">
           <Routes>
-            {/* Admin Routes */}
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/expos" element={<ExpoList />} />
-            <Route path="/expos/add" element={<AddExpo />} />
-            <Route path="/expos/edit/:id" element={<EditExpo />} />
-            <Route path="/halls/edit/:id" element={<EditHall />} />
-            <Route path="/halls/add" element={<AddHall />} />
-            <Route path="/halls" element={<ShowHalls />} />
-            <Route path="/add-booth" element={<AddBooth />} />
-            <Route path="/booths" element={<ShowBooths />} />
-            <Route path="/booths/edit/:id" element={<EditBooth />} />
-            <Route path="/visitors" element={<VisitorList />} />
+            {/* Admin Login */}
+            <Route path="/admin-login" element={<AdminLogin />} />
 
-            {/* Auth Routes */}
+            {/* Admin Protected Routes */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute><Dashboard /></ProtectedRoute>
+            } />
+            <Route path="/expos" element={
+              <ProtectedRoute><ExpoList /></ProtectedRoute>
+            } />
+            <Route path="/expos/add" element={
+              <ProtectedRoute><AddExpo /></ProtectedRoute>
+            } />
+            <Route path="/expos/edit/:id" element={
+              <ProtectedRoute><EditExpo /></ProtectedRoute>
+            } />
+            <Route path="/halls/edit/:id" element={
+              <ProtectedRoute><EditHall /></ProtectedRoute>
+            } />
+            <Route path="/halls/add" element={
+              <ProtectedRoute><AddHall /></ProtectedRoute>
+            } />
+            <Route path="/halls" element={
+              <ProtectedRoute><ShowHalls /></ProtectedRoute>
+            } />
+            <Route path="/add-booth" element={
+              <ProtectedRoute><AddBooth /></ProtectedRoute>
+            } />
+            <Route path="/booths" element={
+              <ProtectedRoute><ShowBooths /></ProtectedRoute>
+            } />
+            <Route path="/booths/edit/:id" element={
+              <ProtectedRoute><EditBooth /></ProtectedRoute>
+            } />
+            <Route path="/visitors" element={
+              <ProtectedRoute><VisitorList /></ProtectedRoute>
+            } />
+               <Route path="/exhibitors" element={
+              <ProtectedRoute><ExhibitorList /></ProtectedRoute>
+            } />
+
+            
+
+
+
+            {/* Normal Auth Routes */}
             <Route path="/register" element={<RegisterData />} />
             <Route path="/login" element={<Login />} />
             <Route path="/fp" element={<ForgetPassword />} />

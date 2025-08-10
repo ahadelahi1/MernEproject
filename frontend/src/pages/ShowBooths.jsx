@@ -2,20 +2,26 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import '../ExpoList.css'
+import "../ExpoList.css";
 
 const ShowBooths = () => {
   const [booths, setBooths] = useState([]);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("");
 
   const fetchBooths = () => {
-    axios.get("http://localhost:4000/api/booths/all")
-      .then(res => setBooths(res.data))
+    axios
+      .get(`http://localhost:4000/api/booths/all`, {
+        params: { search, sort }
+      })
+      .then((res) => setBooths(res.data))
       .catch(() => toast.error("Failed to load booths"));
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure to delete this booth?")) {
-      axios.delete(`http://localhost:4000/api/booths/${id}`)
+      axios
+        .delete(`http://localhost:4000/api/booths/${id}`)
         .then(() => {
           toast.success("Booth deleted");
           fetchBooths();
@@ -26,13 +32,32 @@ const ShowBooths = () => {
 
   useEffect(() => {
     fetchBooths();
-  }, []);
+  }, [search, sort]);
 
   return (
-     <div className="expo-list-wrapper">
+    <div className="expo-list-wrapper">
       <h2 className="expo-list-heading">Booth List</h2>
 
-      <div className="d-flex justify-content-end mb-3">
+      {/* 🔍 Search & Sort Controls */}
+      <div className="d-flex justify-content-between mb-3">
+        <input
+          type="text"
+          className="form-control w-50 shadow-sm"
+          placeholder="Search by Booth Name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <select
+          className="form-select w-auto shadow-sm"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="">Sort by Availability</option>
+          <option value="asc">Available First</option>
+          <option value="desc">Unavailable First</option>
+        </select>
+
         <Link to="/add-booth" className="btn btn-primary shadow">
           <i className="bi bi-plus-circle me-2"></i> Add Booth
         </Link>
@@ -76,7 +101,9 @@ const ShowBooths = () => {
             ))}
             {booths.length === 0 && (
               <tr>
-                <td colSpan="6" className="text-center text-muted">No booths found.</td>
+                <td colSpan="6" className="text-center text-muted">
+                  No booths found.
+                </td>
               </tr>
             )}
           </tbody>

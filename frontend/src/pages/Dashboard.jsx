@@ -5,12 +5,25 @@ import '../Dashboard.css';
 
 const Dashboard = () => {
   const [expos, setExpos] = useState([]);
+  const [visitors, setVisitors] = useState([]);
+  const [exhibitors, setExhibitors] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch Expos
     axios.get("http://localhost:4000/api/expos/all")
       .then(res => setExpos(res.data))
       .catch(() => console.error("Failed to load expos"));
+
+    // Fetch Visitors
+    axios.get("http://localhost:4000/api/users/visitors")
+      .then(res => setVisitors(res.data))
+      .catch(() => console.error("Failed to load visitors"));
+
+    // Fetch Exhibitors
+    axios.get("http://localhost:4000/api/exhibitors")
+      .then(res => setExhibitors(res.data))
+      .catch(() => console.error("Failed to load exhibitors"));
   }, []);
 
   const today = new Date().toISOString().split("T")[0];
@@ -23,10 +36,9 @@ const Dashboard = () => {
     return expos.filter(expo => expo.startDate > today);
   };
 
-  // ✅ Logout handler
   const handleLogout = () => {
-    localStorage.removeItem("adminToken"); // 🔑 Remove token
-    navigate("/admin-login"); // 🔁 Redirect to login
+    localStorage.removeItem("adminToken");
+    navigate("/admin-login");
   };
 
   return (
@@ -57,6 +69,20 @@ const Dashboard = () => {
           <div className="dashboard-card shadow-sm">
             <h5>Upcoming Events</h5>
             <p className="stat-value">{getUpcomingEvents().length}</p>
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="dashboard-card shadow-sm">
+            <h5>Total Visitors</h5>
+            <p className="stat-value">{visitors.length}</p>
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="dashboard-card shadow-sm">
+            <h5>Total Exhibitors</h5>
+            <p className="stat-value">{exhibitors.length}</p>
           </div>
         </div>
       </div>

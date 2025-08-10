@@ -7,7 +7,10 @@ router.post("/exhibitorlogin", exhibitorController.loginExhibitor);
 router.get("/booking", exhibitorController.getAllExhibitors);
 router.get("/exhibitordashboard", exhibitorController.getAllExhibitors);
 router.get("/exhibitorprofile", exhibitorController.getAllExhibitors);
-
 router.post("/:id/status", exhibitorController.updateExhibitorStatus);
+
+router.get("/", exhibitorController.getAllExhibitors);
+
+router.put("/:id/status", exhibitorController.updateExhibitorStatus);
 
 module.exports = router;

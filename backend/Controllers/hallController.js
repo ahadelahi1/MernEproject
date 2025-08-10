@@ -28,14 +28,33 @@ exports.addHall = async (req, res) => {
 
 
 // Get All Halls
+// Get All Halls (with search & filter)
 exports.getHalls = async (req, res) => {
   try {
-    const halls = await Hall.find().populate('expoId', 'title');
+    const { hallNumber, search } = req.query;
+    let query = {};
+
+    // Filter by hall number if provided
+    if (hallNumber) {
+      query.hallNumber = hallNumber;
+    }
+
+    // Find halls & populate expo title
+    let halls = await Hall.find(query).populate('expoId', 'title');
+
+    // Search by expo title if provided
+    if (search) {
+      halls = halls.filter(hall =>
+        hall.expoId?.title?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
     res.json(halls);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch halls', error });
   }
 };
+
 
 // Get Single Hall
 exports.getHallById = async (req, res) => {

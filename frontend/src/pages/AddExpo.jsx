@@ -11,29 +11,36 @@ const AddExpo = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null); // ✅ image state
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!image) {
+      toast.error("Please select an image");
+      return;
+    }
+
     try {
-      await axios
-        .post("http://localhost:4000/api/expos/add", {
-          title,
-          location,
-          theme,
-          startDate,
-          endDate,
-          description,
-        })
-        .then(() => {
-          toast.success("Expo successfully added!");
-          navigate("/expos");
-        })
-        .catch((e) => {
-          toast.error(e.data.msg);
-        });
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("location", location);
+      formData.append("theme", theme);
+      formData.append("startDate", startDate);
+      formData.append("endDate", endDate);
+      formData.append("description", description);
+      formData.append("image", image); // ✅ image append
+
+      await axios.post("http://localhost:4000/api/expos/add", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      toast.success("Expo successfully added!");
+      navigate("/expos");
     } catch (error) {
-      toast.error(error.response?.data.msg);
+      toast.error(error.response?.data.msg || "Something went wrong");
     }
   };
 
@@ -41,6 +48,8 @@ const AddExpo = () => {
     <div className="expo-form-wrapper">
       <h2 className="expo-form-heading">Add New Expo</h2>
       <form onSubmit={handleSubmit} className="expo-form">
+        
+        {/* Title & Location */}
         <div className="row mb-4">
           <div className="col-md-6">
             <label className="form-label">Title</label>
@@ -64,6 +73,7 @@ const AddExpo = () => {
           </div>
         </div>
 
+        {/* Theme, Dates */}
         <div className="row mb-4">
           <div className="col-md-6">
             <label className="form-label">Theme</label>
@@ -82,7 +92,6 @@ const AddExpo = () => {
               value={startDate}
               onChange={(e) => {
                 setStartDate(e.target.value);
-                // reset end date if it becomes invalid
                 if (endDate && e.target.value > endDate) {
                   setEndDate("");
                 }
@@ -99,11 +108,12 @@ const AddExpo = () => {
               min={startDate || ""}
               onChange={(e) => setEndDate(e.target.value)}
               required
-              disabled={!startDate} // disable until start date selected
+              disabled={!startDate}
             />
           </div>
         </div>
 
+        {/* Description */}
         <div className="mb-4">
           <label className="form-label">Description</label>
           <textarea
@@ -114,6 +124,19 @@ const AddExpo = () => {
           ></textarea>
         </div>
 
+        {/* Image Upload */}
+        <div className="mb-4">
+          <label className="form-label">Expo Image</label>
+          <input
+            type="file"
+            className="form-control"
+            onChange={(e) => setImage(e.target.files[0])}
+            accept="image/*"
+            required
+          />
+        </div>
+
+        {/* Submit Button */}
         <button type="submit" className="btn btn-primary px-5">
           Save Expo
         </button>

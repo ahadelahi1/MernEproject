@@ -10,7 +10,7 @@ const Sidebar = () => {
   <h4 className="text-center mb-4 fw-bold brand-name">EventSphere Admin</h4>
 
   {/* Dashboard */}
-  <Link to="/" className="sidebar-link">
+  <Link to="/dashboard" className="sidebar-link">
     <i className="bi bi-speedometer2 me-2"></i> Dashboard
   </Link>
 
@@ -65,6 +65,9 @@ const Sidebar = () => {
       </Link>
     </div>
   </div>
+  <Link to="/exhibitors" className="sidebar-link">
+  <i className="bi bi-person-badge me-2"></i> Exhibitor List
+</Link>
       <Link to="/visitors" className="sidebar-link">
         <i className="bi bi-people me-2"></i> Visitor List
       </Link>

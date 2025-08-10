@@ -1,0 +1,20 @@
+.exhibitor-card {
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.exhibitor-card:hover {
+  transform: translateY(-3px);
+}
+
+.active-card {
+  background-color: #e8f9f0; /* Light green */
+}
+
+.inactive-card {
+  background-color: #fdeaea; /* Light red */
+}
+
+.status-text {
+  font-weight: 500;
+}

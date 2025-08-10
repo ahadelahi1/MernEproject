@@ -2,18 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "../ExpoList.css"; // Reuse the same styling
+import "../ExpoList.css";
 
 const ShowHalls = () => {
   const [halls, setHalls] = useState([]);
+  const [search, setSearch] = useState("");
+  const [hallNumber, setHallNumber] = useState("");
 
   useEffect(() => {
     fetchHalls();
-  }, []);
+  }, [search, hallNumber]);
 
   const fetchHalls = () => {
     axios
-      .get("http://localhost:4000/api/halls/get")
+      .get("http://localhost:4000/api/halls/get", {
+        params: { search, hallNumber }
+      })
       .then((res) => setHalls(res.data))
       .catch(() => toast.error("Error loading halls"));
   };
@@ -33,6 +37,30 @@ const ShowHalls = () => {
     <div className="expo-list-wrapper">
       <h2 className="expo-list-heading">Hall List</h2>
 
+      {/* Filter Row */}
+      <div className="filter-row d-flex mb-3">
+        {/* Search by Expo Title */}
+        <div className="search-wrap">
+          <input
+            type="text"
+            placeholder="Search by Expo Title..."
+            className="search-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <i className="bi bi-search search-icon"></i>
+        </div>
+
+        {/* Filter by Hall Number */}
+        <input
+          type="number"
+          placeholder="Hall Number"
+          className="small-input"
+          value={hallNumber}
+          onChange={(e) => setHallNumber(e.target.value)}
+        />
+      </div>
+
       <div className="d-flex justify-content-end mb-3">
         <Link to="/halls/add" className="btn btn-primary shadow">
           <i className="bi bi-plus-circle me-2"></i> Add Hall
@@ -50,27 +78,33 @@ const ShowHalls = () => {
             </tr>
           </thead>
           <tbody>
-            {halls.map((hall) => (
-              <tr key={hall._id}>
-                <td className="fw-semibold">{hall.hallNumber}</td>
-                <td>{hall.numberOfBooths}</td>
-                <td>{hall.expoId?.title}</td>
-                <td className="text-center">
-                  <Link
-                    to={`/halls/edit/${hall._id}`}
-                    className="btn btn-sm btn-outline-primary me-2"
-                  >
-                    <i className="bi bi-pencil-square"></i>
-                  </Link>
-                  <button
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={() => handleDelete(hall._id)}
-                  >
-                    <i className="bi bi-trash3-fill"></i>
-                  </button>
-                </td>
+            {halls.length > 0 ? (
+              halls.map((hall) => (
+                <tr key={hall._id}>
+                  <td className="fw-semibold">{hall.hallNumber}</td>
+                  <td>{hall.numberOfBooths}</td>
+                  <td>{hall.expoId?.title}</td>
+                  <td className="text-center">
+                    <Link
+                      to={`/halls/edit/${hall._id}`}
+                      className="btn btn-sm btn-outline-primary me-2"
+                    >
+                      <i className="bi bi-pencil-square"></i>
+                    </Link>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => handleDelete(hall._id)}
+                    >
+                      <i className="bi bi-trash3-fill"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="text-center">No halls found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

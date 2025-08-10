@@ -140,13 +140,67 @@ let all_func = {
 
 getVisitors: async function (req, res) {
   try {
-    const visitors = await User.find({ role: "user" }).select("-password -__v");
+    let { search, gender, sort } = req.query;
+    let filter = { role: "user" };
+
+    // 🔍 Search by name (case-insensitive)
+    if (search) {
+      filter.name = { $regex: search, $options: "i" };
+    }
+
+    // 🚻 Filter by gender
+    if (gender && gender !== "all") {
+      filter.gender = gender;
+    }
+
+    let query = User.find(filter).select("-password -__v");
+
+    // 📊 Sort by age
+    if (sort === "asc") {
+      query = query.sort({ age: 1 });
+    } else if (sort === "desc") {
+      query = query.sort({ age: -1 });
+    }
+
+    const visitors = await query;
     res.json(visitors);
   } catch (error) {
     console.error("Error fetching visitors:", error);
     res.status(500).json({ msg: "Failed to fetch visitors", error: error.message });
   }
 },
+getVisitors: async function (req, res) {
+  try {
+    let { search, gender, sort } = req.query;
+    let filter = { role: "user" };
+
+    // 🔍 Search by name (case-insensitive)
+    if (search) {
+      filter.name = { $regex: search, $options: "i" };
+    }
+
+    // 🚻 Filter by gender
+    if (gender && gender !== "all") {
+      filter.gender = gender;
+    }
+
+    let query = User.find(filter).select("-password -__v");
+
+    // 📊 Sort by age
+    if (sort === "asc") {
+      query = query.sort({ age: 1 });
+    } else if (sort === "desc") {
+      query = query.sort({ age: -1 });
+    }
+
+    const visitors = await query;
+    res.json(visitors);
+  } catch (error) {
+    console.error("Error fetching visitors:", error);
+    res.status(500).json({ msg: "Failed to fetch visitors", error: error.message });
+  }
+},
+
 
 
 

@@ -45,12 +45,30 @@ exports.createBooth = async (req, res) => {
 
 exports.getAllBooths = async (req, res) => {
   try {
-    const booths = await Booth.find().populate("hall", "hallNumber");
+    const { search, sort } = req.query;
+    let filter = {};
+
+    // 🔍 Search by booth name (case-insensitive)
+    if (search) {
+      filter.name = { $regex: search, $options: "i" };
+    }
+
+    let query = Booth.find(filter).populate("hall", "hallNumber");
+
+    // ↕ Sort by availability (optional)
+    if (sort === "asc") {
+      query = query.sort({ availability: 1 });
+    } else if (sort === "desc") {
+      query = query.sort({ availability: -1 });
+    }
+
+    const booths = await query;
     res.json(booths);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch booths", error });
   }
 };
+
 
 exports.getBoothById = async (req, res) => {
   try {
