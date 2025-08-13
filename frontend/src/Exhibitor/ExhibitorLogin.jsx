@@ -21,19 +21,22 @@ export default function ExhibitorLogin() {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:4000/api/exhibitor/login", {
+      const res = await axios.post("http://localhost:4000/api/exhibitors/exhibitorlogin", {
         email,
         password,
+      }).then((a)=>{
+        toast.success(a.data.message);
+        // Redirect to Exhibitor Dashboard
+        window.location.href = "/exhibitordashboard";
+      }).catch((a)=>{
+        toast.error(a.data.message);
+
       });
 
       // Backend should return exhibitor data with status
-      if (res.data.status === "active") {
-        toast.success("Login successful!");
-        // Redirect to Exhibitor Dashboard
-        window.location.href = "/exhibitor/dashboard";
-      } else {
-        toast.error("Your account is pending approval.");
-      }
+   
+      
+      
     } catch (error) {
       toast.error(error.response?.data?.message || "Invalid email or password");
     } finally {
