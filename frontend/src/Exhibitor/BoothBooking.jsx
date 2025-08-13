@@ -9,9 +9,9 @@ import "../exhibitorcss/BoothBooking.css";
 export default function BoothBooking() {
   const [expos, setExpos] = useState([]);
   const [selectedExpo, setSelectedExpo] = useState(null);
+  const [booths, setBooths] = useState([]);
   const [formData, setFormData] = useState({
-    boothName: "",
-    boothSize: "",
+    boothId: "",
     bookingDate: "",
     description: "",
   });
@@ -25,21 +25,33 @@ export default function BoothBooking() {
       .catch(() => toast.error("Error fetching expos"));
   }, []);
 
-  // ✅ When expo is clicked, fetch details and pre-fill form
+  // ✅ Fetch expo + booths when expo selected
   const handleExpoClick = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/expos/${id}`);
-      setSelectedExpo(res.data);
+      const expoRes = await axios.get(`http://localhost:4000/api/expos/${id}`);
+      setSelectedExpo(expoRes.data);
+
+      const boothsRes = await axios.get(
+        `http://localhost:4000/api/booths/by-expo/${id}`
+      );
+      setBooths(boothsRes.data.filter((b) => b.availability === "Available"));
 
       setFormData({
-        boothName: `${res.data.title} Booth`,
-        boothSize: "",
-        bookingDate: res.data.startDate?.split("T")[0] || "",
-        description: `Booth for ${res.data.title} at ${res.data.location}`,
+        boothId: "",
+        bookingDate: expoRes.data.startDate?.split("T")[0] || "",
+        description: `Booth booking for ${expoRes.data.title} at ${expoRes.data.location}`,
       });
     } catch {
-      toast.error("Error fetching expo details");
+      toast.error("Error fetching expo or booths");
     }
+  };
+
+  // ✅ Checkbox handler (single booth selection)
+  const handleBoothSelect = (boothId) => {
+    setFormData({
+      ...formData,
+      boothId: formData.boothId === boothId ? "" : boothId, // toggle selection
+    });
   };
 
   const handleChange = (e) => {
@@ -49,12 +61,12 @@ export default function BoothBooking() {
     });
   };
 
-  // ✅ Submit booth booking
+  // ✅ Submit booking
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.boothName || !formData.boothSize || !formData.bookingDate) {
-      toast.error("Please fill all required fields!");
+    if (!formData.boothId || !formData.bookingDate) {
+      toast.error("Please select a booth and date!");
       return;
     }
 
@@ -71,12 +83,12 @@ export default function BoothBooking() {
       });
       toast.success("Booth booked successfully!");
       setFormData({
-        boothName: "",
-        boothSize: "",
+        boothId: "",
         bookingDate: "",
         description: "",
       });
       setSelectedExpo(null);
+      setBooths([]);
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong!");
     } finally {
@@ -89,8 +101,7 @@ export default function BoothBooking() {
       <ExhibitorSidebar />
 
       <main className="exhibitor-main">
-
-        {/* ✅ Expo selection buttons */}
+        {/* Expo selection */}
         <div className="expo-buttons">
           {expos.map((expo) => (
             <button
@@ -103,36 +114,40 @@ export default function BoothBooking() {
           ))}
         </div>
 
-        {/* ✅ Booking form (only shows after expo selected) */}
+        {/* Booking form */}
         {selectedExpo && (
           <div className="form-card">
             <h2 className="form-title">Book Booth for {selectedExpo.title}</h2>
-            <p><strong>Location:</strong> {selectedExpo.location}</p>
-            <p><strong>Theme:</strong> {selectedExpo.theme}</p>
             <p>
-              <strong>Dates:</strong> {new Date(selectedExpo.startDate).toLocaleDateString()} -{" "}
+              <strong>Location:</strong> {selectedExpo.location}
+            </p>
+            <p>
+              <strong>Theme:</strong> {selectedExpo.theme}
+            </p>
+            <p>
+              <strong>Dates:</strong>{" "}
+              {new Date(selectedExpo.startDate).toLocaleDateString()} -{" "}
               {new Date(selectedExpo.endDate).toLocaleDateString()}
             </p>
 
             <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="boothName"
-                placeholder="Booth Name"
-                value={formData.boothName}
-                onChange={handleChange}
-              />
-
-              <select
-                name="boothSize"
-                value={formData.boothSize}
-                onChange={handleChange}
-              >
-                <option value="">Select Booth Size</option>
-                <option value="Small">Small (2x2 m)</option>
-                <option value="Medium">Medium (3x3 m)</option>
-                <option value="Large">Large (5x5 m)</option>
-              </select>
+              {/* ✅ Booth Checkboxes */}
+              <div className="booth-checkbox-list">
+                {booths.length > 0 ? (
+                  booths.map((booth) => (
+                    <label key={booth._id} className="booth-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={formData.boothId === booth._id}
+                        onChange={() => handleBoothSelect(booth._id)}
+                      />
+                      {booth.stallNumber} - {booth.name} 
+                    </label>
+                  ))
+                ) : (
+                  <p>No available booths for this expo.</p>
+                )}
+              </div>
 
               <input
                 type="date"
