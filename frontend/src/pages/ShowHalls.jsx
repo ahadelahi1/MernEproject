@@ -73,7 +73,7 @@ const ShowHalls = () => {
             <tr>
               <th>Hall Number</th>
               <th>Booth Count</th>
-              <th>Expo Title</th>
+              <th>Event Title</th>
               <th className="text-center">Actions</th>
             </tr>
           </thead>

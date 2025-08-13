@@ -24,7 +24,7 @@ const ExpoController = {
       });
 
       await expo.save();
-      res.status(201).json({ msg: "Expo Created", expo });
+      res.status(201).json({ msg: "Event Created", expo });
     } catch (err) {
       res.status(500).json({ msg: err.message });
     }
@@ -58,7 +58,7 @@ const ExpoController = {
   GetOne: async (req, res) => {
     try {
       const expo = await Expo.findById(req.params.id);
-      if (!expo) return res.status(404).json({ msg: "Expo not found" });
+      if (!expo) return res.status(404).json({ msg: "Event not found" });
       res.status(200).json(expo);
     } catch (err) {
       res.status(500).json({ msg: err.message });
@@ -71,7 +71,7 @@ const ExpoController = {
       const { title, location, theme, startDate, endDate, description } = req.body;
 
       const expo = await Expo.findById(id);
-      if (!expo) return res.status(404).json({ msg: "Expo not found" });
+      if (!expo) return res.status(404).json({ msg: "Event not found" });
 
       let image = expo.image;
 
@@ -96,7 +96,7 @@ const ExpoController = {
       expo.image = image;
 
       await expo.save();
-      res.status(200).json({ msg: "Expo Updated", expo });
+      res.status(200).json({ msg: "Event Updated", expo });
     } catch (err) {
       res.status(500).json({ msg: err.message });
     }
@@ -106,7 +106,7 @@ const ExpoController = {
     try {
       const { id } = req.params;
       const expo = await Expo.findById(id);
-      if (!expo) return res.status(404).json({ msg: "Expo not found" });
+      if (!expo) return res.status(404).json({ msg: "Event not found" });
 
       // Image delete from folder
       if (expo.image) {
@@ -117,7 +117,7 @@ const ExpoController = {
       }
 
       await Expo.findByIdAndDelete(id);
-      res.status(200).json({ msg: "Expo Deleted" });
+      res.status(200).json({ msg: "Event Deleted" });
     } catch (err) {
       res.status(500).json({ msg: err.message });
     }

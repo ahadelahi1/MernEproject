@@ -69,14 +69,14 @@ const EditHall = () => {
         </div>
 
         <div className="mb-4">
-          <label className="form-label">Select Expo</label>
+          <label className="form-label">Select Event</label>
           <select
             className="form-select"
             value={expoId}
             onChange={(e) => setExpoId(e.target.value)}
             required
           >
-            <option value="">-- Select Expo --</option>
+            <option value="">-- Select Event --</option>
             {expos.map((expo) => (
               <option key={expo._id} value={expo._id}>
                 {expo.title}

@@ -66,7 +66,7 @@ const EditExpo = () => {
 
   return (
     <div className="expo-form-wrapper">
-      <h2 className="expo-form-heading">Edit Expo</h2>
+      <h2 className="expo-form-heading">Edit Event</h2>
       <form onSubmit={handleSubmit} className="expo-form">
         <div className="row mb-4">
           <div className="col-md-6">

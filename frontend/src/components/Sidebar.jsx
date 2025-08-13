@@ -18,15 +18,15 @@ const Sidebar = () => {
   <div className="dropdown-section">
     <input type="checkbox" id="expo-toggle" />
     <label htmlFor="expo-toggle" className="sidebar-link dropdown-label">
-      <i className="bi bi-calendar-event me-2"></i> Manage Expos
+      <i className="bi bi-calendar-event me-2"></i> Manage Event
       <i className="bi bi-chevron-down ms-auto"></i>
     </label>
     <div className="dropdown-content">
       <Link to="/expos/add" className="dropdown-item-custom">
-        <i className="bi bi-plus-circle me-2"></i> Add Expo
+        <i className="bi bi-plus-circle me-2"></i> Add Event
       </Link>
       <Link to="/expos" className="dropdown-item-custom">
-        <i className="bi bi-list-ul me-2"></i> Expo List
+        <i className="bi bi-list-ul me-2"></i> Event List
       </Link>
     </div>
   </div>
@@ -57,9 +57,7 @@ const Sidebar = () => {
       <i className="bi bi-chevron-down ms-auto"></i>
     </label>
     <div className="dropdown-content">
-      <Link to="/add-booth" className="dropdown-item-custom">
-        <i className="bi bi-plus-circle me-2"></i> Add Booth
-      </Link>
+   
       <Link to="/booths" className="dropdown-item-custom">
         <i className="bi bi-list-ul me-2"></i> Booth List
       </Link>

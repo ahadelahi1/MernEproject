@@ -40,7 +40,7 @@ const ExpoList = () => {
 
   return (
     <div className="expo-list-wrapper">
-      <h2 className="expo-list-heading">Expo List</h2>
+      <h2 className="expo-list-heading">Event List</h2>
 
       {/* Filters */}
       <div className="filters mb-4">
@@ -76,7 +76,7 @@ const ExpoList = () => {
 
       <div className="d-flex justify-content-end mb-3">
         <Link to="/expos/add" className="btn btn-primary shadow">
-          <i className="bi bi-plus-circle me-2"></i> Add Expo
+          <i className="bi bi-plus-circle me-2"></i> Add Event
         </Link>
       </div>
 
@@ -139,7 +139,7 @@ const ExpoList = () => {
             ) : (
               <tr>
                 <td colSpan="8" className="text-center text-muted">
-                  No expos found
+                  No Event found
                 </td>
               </tr>
             )}
