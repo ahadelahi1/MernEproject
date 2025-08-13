@@ -58,9 +58,7 @@ const ShowBooths = () => {
           <option value="desc">Unavailable First</option>
         </select>
 
-        <Link to="/add-booth" className="btn btn-primary shadow">
-          <i className="bi bi-plus-circle me-2"></i> Add Booth
-        </Link>
+       
       </div>
 
       <div className="table-responsive rounded shadow-sm">

@@ -46,7 +46,7 @@ const AddExpo = () => {
 
   return (
     <div className="expo-form-wrapper">
-      <h2 className="expo-form-heading">Add New Expo</h2>
+      <h2 className="expo-form-heading">Add New Event</h2>
       <form onSubmit={handleSubmit} className="expo-form">
         
         {/* Title & Location */}
@@ -126,7 +126,7 @@ const AddExpo = () => {
 
         {/* Image Upload */}
         <div className="mb-4">
-          <label className="form-label">Expo Image</label>
+          <label className="form-label">Event Image</label>
           <input
             type="file"
             className="form-control"
@@ -138,7 +138,7 @@ const AddExpo = () => {
 
         {/* Submit Button */}
         <button type="submit" className="btn btn-primary px-5">
-          Save Expo
+          Save Event
         </button>
       </form>
     </div>
