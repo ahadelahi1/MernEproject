@@ -61,7 +61,7 @@ exports.loginExhibitor = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.json({ token, exhibitor });
+    res.json({ token, exhibitor, message: "Login successfull"});
   } catch (error) {
     res.status(500).json({ message: "Login failed", error });
   }
@@ -99,3 +99,5 @@ exports.updateExhibitorStatus = async (req, res) => {
 
 
 };
+
+

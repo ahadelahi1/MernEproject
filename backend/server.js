@@ -31,12 +31,13 @@ app.use("/api/expos", expoRoutes);
 app.use('/api/halls', hallRoutes);
 app.use('/api/booths', boothRoutes);
 app.use("/api/user/", userroutes);
-app.use('/api/users', userroutes);
 
-app.use('/api/exhibitors', exhibitorRoutes);
+app.use('/api/exhibitors/', exhibitorRoutes);
 
 // Static serve for images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+

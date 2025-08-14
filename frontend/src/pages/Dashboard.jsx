@@ -53,7 +53,7 @@ const Dashboard = () => {
       <div className="row g-4">
         <div className="col-md-4">
           <div className="dashboard-card shadow-sm">
-            <h5>Total Expos</h5>
+            <h5>Total Event</h5>
             <p className="stat-value">{expos.length}</p>
           </div>
         </div>
