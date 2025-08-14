@@ -2,6 +2,7 @@ const Exhibitor = require("../Models/Exhibitor");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
 // ✅ Exhibitor Register
 exports.registerExhibitor = async (req, res) => {
   const { name, email, password, phone } = req.body;
@@ -90,4 +91,11 @@ exports.updateExhibitorStatus = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Failed to update status", error });
   }
+
+// newww
+
+
+
+
+
 };
