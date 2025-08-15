@@ -17,7 +17,7 @@ const EditExpo = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/expos/single/${id}`)
+      .get(`http://localhost:4000/api/expos/${id}`)
       .then((res) => {
         const expo = res.data;
         setTitle(expo.title);
@@ -50,7 +50,7 @@ const EditExpo = () => {
       }
 
       await axios.put(
-        `http://localhost:4000/api/expos/update/${id}`,
+        `http://localhost:4000/api/expos/${id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
