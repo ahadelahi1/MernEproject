@@ -1,7 +1,7 @@
 const Exhibitor = require("../Models/Exhibitor");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+require("dotenv").config()
 // ✅ Exhibitor Register
 exports.registerExhibitor = async (req, res) => {
   const { name, email, password, phone } = req.body;
@@ -56,7 +56,7 @@ exports.loginExhibitor = async (req, res) => {
     // Token
     const token = jwt.sign(
       { id: exhibitor._id, role: "exhibitor" },
-      "your_jwt_secret",
+      process.env.KEY,
       { expiresIn: "1d" }
     );
 

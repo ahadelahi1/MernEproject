@@ -21,7 +21,7 @@ export default function ExhibitorLogin() {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:4000/api/exhibitors/exhibitorlogin", {
+     await axios.post("http://localhost:4000/api/exhibitors/exhibitorlogin", {
         email,
         password,
       }).then((a)=>{
@@ -38,7 +38,10 @@ export default function ExhibitorLogin() {
       
       
     } catch (error) {
-      toast.error(error.response?.data?.message || "Invalid email or password");
+  
+        toast.error(error.response?.data.message);
+
+   
     } finally {
       setLoading(false);
     }
