@@ -11,15 +11,33 @@ const AddExpo = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null); // ✅ image state
+  const [image, setImage] = useState(null);
 
   const navigate = useNavigate();
+
+  // ✅ Image file validation (frontend)
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+
+      if (!validTypes.includes(file.type)) {
+        toast.error("Only JPG, JPEG, PNG, or GIF images are allowed.");
+        e.target.value = null; // Clear file input
+        setImage(null);
+        return;
+      }
+
+      setImage(file);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!image) {
-      toast.error("Please select an image");
+      toast.error("Please select a valid image file.");
       return;
     }
 
@@ -31,7 +49,7 @@ const AddExpo = () => {
       formData.append("startDate", startDate);
       formData.append("endDate", endDate);
       formData.append("description", description);
-      formData.append("image", image); // ✅ image append
+      formData.append("image", image);
 
       await axios.post("http://localhost:4000/api/expos/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -40,7 +58,7 @@ const AddExpo = () => {
       toast.success("Expo successfully added!");
       navigate("/expos");
     } catch (error) {
-      toast.error(error.response?.data.msg || "Something went wrong");
+      toast.error(error.response?.data?.msg || "Something went wrong");
     }
   };
 
@@ -48,7 +66,7 @@ const AddExpo = () => {
     <div className="expo-form-wrapper">
       <h2 className="expo-form-heading">Add New Event</h2>
       <form onSubmit={handleSubmit} className="expo-form">
-        
+
         {/* Title & Location */}
         <div className="row mb-4">
           <div className="col-md-6">
@@ -130,7 +148,7 @@ const AddExpo = () => {
           <input
             type="file"
             className="form-control"
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={handleImageChange}
             accept="image/*"
             required
           />

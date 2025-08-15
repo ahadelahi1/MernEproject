@@ -1,5 +1,3 @@
- BoothBooking.css 
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -36,12 +34,12 @@
   letter-spacing: 1.2px;
 }
 
-/* Main content */
+/* Main content - updated for column layout */
 .exhibitor-main {
   margin-left: 260px; /* sidebar width */
   flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* vertical stack */
   align-items: center;
   padding: 40px 30px;
   min-height: 100vh;
@@ -49,14 +47,83 @@
   overflow-y: auto;
 }
 
-/* Form Card */
+/* Heading */
+.events-heading {
+  text-align: center;
+  margin: 0 0 25px 0;
+  padding-top: 10px;
+  color: #007a5f;
+  font-size: 2.2rem;
+  font-weight: 700;
+  width: 100%;
+}
+
+/* Cards grid - now fixed to 2 columns on desktop */
+.expo-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  padding: 10px;
+}
+
+.expo-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.expo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.expo-card.active {
+  border: 2px solid #007bff;
+}
+
+.expo-card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.expo-card-placeholder {
+  width: 100%;
+  height: 160px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 14px;
+}
+
+.expo-card-content {
+  padding: 10px 15px;
+}
+
+.expo-date,
+.expo-location {
+  font-size: 14px;
+  color: #555;
+  margin: 4px 0;
+}
+
+/* Form Card - now full width below cards */
 .form-card {
   background: #fff;
-  padding: 40px 50px;
-  border-radius: 14px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
+  max-width: 900px;
   text-align: center;
   transition: box-shadow 0.3s ease;
 }
@@ -65,7 +132,6 @@
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
-/* Form Title */
 .form-title {
   font-size: 2rem;
   font-weight: 700;
@@ -74,7 +140,6 @@
   letter-spacing: 1.1px;
 }
 
-/* Inputs, select, textarea */
 form input,
 form select,
 form textarea {
@@ -98,7 +163,6 @@ form textarea:focus {
   box-shadow: 0 0 8px rgba(0, 122, 95, 0.35);
 }
 
-/* Button */
 form button {
   width: 100%;
   padding: 15px 0;
@@ -135,7 +199,7 @@ form button:disabled {
   font-weight: 600;
 }
 
-/* Responsive */
+/* Mobile responsive: 1 column cards */
 @media (max-width: 768px) {
   .exhibitor-sidebar {
     position: relative;
@@ -146,6 +210,10 @@ form button:disabled {
   .exhibitor-main {
     margin-left: 0;
     padding: 20px 15px;
+  }
+
+  .expo-cards-grid {
+    grid-template-columns: 1fr;
   }
 
   .form-card {

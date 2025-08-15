@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 
 import ExhibitorSidebar from "../components/ExhibitorSidebar";
 import "../exhibitorcss/BoothBooking.css";
@@ -9,15 +11,16 @@ import "../exhibitorcss/BoothBooking.css";
 export default function BoothBooking() {
   const [expos, setExpos] = useState([]);
   const [selectedExpo, setSelectedExpo] = useState(null);
+  const [booths, setBooths] = useState([]);
   const [formData, setFormData] = useState({
-    boothName: "",
-    boothSize: "",
+    boothIds: [],
     bookingDate: "",
     description: "",
   });
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fetch all expos on load
+  const animatedComponents = makeAnimated();
+
   useEffect(() => {
     axios
       .get("http://localhost:4000/api/expos/all")
@@ -25,21 +28,39 @@ export default function BoothBooking() {
       .catch(() => toast.error("Error fetching expos"));
   }, []);
 
-  // ✅ When expo is clicked, fetch details and pre-fill form
   const handleExpoClick = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/expos/${id}`);
-      setSelectedExpo(res.data);
+      const expoRes = await axios.get(`http://localhost:4000/api/expos/${id}`);
+      setSelectedExpo(expoRes.data);
+
+      const boothsRes = await axios.get(
+        `http://localhost:4000/api/booths/by-expo/${id}`
+      );
+
+      const availableBooths = boothsRes.data
+        .filter((b) => b.availability === "Available")
+        .map((b) => ({
+          value: b._id,
+          label: `${b.stallNumber} - ${b.name}`,
+        }));
+
+      setBooths(availableBooths);
 
       setFormData({
-        boothName: `${res.data.title} Booth`,
-        boothSize: "",
-        bookingDate: res.data.startDate?.split("T")[0] || "",
-        description: `Booth for ${res.data.title} at ${res.data.location}`,
+        boothIds: [],
+        bookingDate: expoRes.data.startDate?.split("T")[0] || "",
+        description: `Booth booking for ${expoRes.data.title} at ${expoRes.data.location}`,
       });
     } catch {
-      toast.error("Error fetching expo details");
+      toast.error("Error fetching expo or booths");
     }
+  };
+
+  const handleBoothChange = (selectedOptions) => {
+    setFormData({
+      ...formData,
+      boothIds: selectedOptions ? selectedOptions.map((opt) => opt.value) : [],
+    });
   };
 
   const handleChange = (e) => {
@@ -49,12 +70,11 @@ export default function BoothBooking() {
     });
   };
 
-  // ✅ Submit booth booking
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.boothName || !formData.boothSize || !formData.bookingDate) {
-      toast.error("Please fill all required fields!");
+    if (formData.boothIds.length === 0 || !formData.bookingDate) {
+      toast.error("Please select at least one booth and date!");
       return;
     }
 
@@ -69,14 +89,14 @@ export default function BoothBooking() {
         ...formData,
         expoId: selectedExpo._id,
       });
-      toast.success("Booth booked successfully!");
+      toast.success("Booth(s) booked successfully!");
       setFormData({
-        boothName: "",
-        boothSize: "",
+        boothIds: [],
         bookingDate: "",
         description: "",
       });
       setSelectedExpo(null);
+      setBooths([]);
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong!");
     } finally {
@@ -89,50 +109,58 @@ export default function BoothBooking() {
       <ExhibitorSidebar />
 
       <main className="exhibitor-main">
+        {/* Heading at top */}
+        <h1 className="events-heading">Upcoming Events</h1>
 
-        {/* ✅ Expo selection buttons */}
-        <div className="expo-buttons">
+        {/* Expo Cards */}
+        <div className="expo-cards-grid">
           {expos.map((expo) => (
-            <button
+            <div
               key={expo._id}
-              className={selectedExpo?._id === expo._id ? "active-expo" : ""}
+              className={`expo-card ${selectedExpo?._id === expo._id ? "active" : ""}`}
               onClick={() => handleExpoClick(expo._id)}
             >
-              {expo.title}
-            </button>
+              {expo.image ? (
+                <img
+                  src={`http://localhost:4000/uploads/${expo.image}`}
+                  alt={expo.title}
+                  className="expo-card-img"
+                />
+              ) : (
+                <div className="expo-card-placeholder">No Image</div>
+              )}
+              <div className="expo-card-content">
+                <h3>{expo.title}</h3>
+                <p className="expo-date">
+                  {new Date(expo.startDate).toLocaleDateString()} -{" "}
+                  {new Date(expo.endDate).toLocaleDateString()}
+                </p>
+                <p className="expo-location">{expo.location}</p>
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* ✅ Booking form (only shows after expo selected) */}
+        {/* Booking Form below cards */}
         {selectedExpo && (
           <div className="form-card">
-            <h2 className="form-title">Book Booth for {selectedExpo.title}</h2>
+            <h2 className="form-title">Book Booth(s) for {selectedExpo.title}</h2>
             <p><strong>Location:</strong> {selectedExpo.location}</p>
             <p><strong>Theme:</strong> {selectedExpo.theme}</p>
             <p>
-              <strong>Dates:</strong> {new Date(selectedExpo.startDate).toLocaleDateString()} -{" "}
+              <strong>Dates:</strong>{" "}
+              {new Date(selectedExpo.startDate).toLocaleDateString()} -{" "}
               {new Date(selectedExpo.endDate).toLocaleDateString()}
             </p>
 
             <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="boothName"
-                placeholder="Booth Name"
-                value={formData.boothName}
-                onChange={handleChange}
+              <Select
+                isMulti
+                components={animatedComponents}
+                options={booths}
+                onChange={handleBoothChange}
+                placeholder="Select Booth(s)"
               />
-
-              <select
-                name="boothSize"
-                value={formData.boothSize}
-                onChange={handleChange}
-              >
-                <option value="">Select Booth Size</option>
-                <option value="Small">Small (2x2 m)</option>
-                <option value="Medium">Medium (3x3 m)</option>
-                <option value="Large">Large (5x5 m)</option>
-              </select>
 
               <input
                 type="date"
@@ -149,7 +177,7 @@ export default function BoothBooking() {
               />
 
               <button type="submit" disabled={loading}>
-                {loading ? "Booking..." : "Book Booth"}
+                {loading ? "Booking..." : "Book Booth(s)"}
               </button>
             </form>
           </div>

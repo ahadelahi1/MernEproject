@@ -10,7 +10,7 @@
 .exhibitor-sidebar {
   width: 260px;
   background-color: #1E2A38;
-  color: white;
+  color: #ffc107;
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
@@ -163,3 +163,4 @@
     flex: 1 1 100%;
   }
 }
+
