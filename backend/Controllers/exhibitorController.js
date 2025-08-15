@@ -39,32 +39,35 @@ exports.loginExhibitor = async (req, res) => {
   try {
     const exhibitor = await Exhibitor.findOne({ email });
     if (!exhibitor) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email"});
     }
 
-    // Status check
-    if (exhibitor.status !== "active") {
-      return res.status(403).json({ message: "Account not active. Please wait for admin approval." });
-    }
-
-    // Password check
+    // First check password
     const isMatch = await bcrypt.compare(password, exhibitor.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid password" });
     }
 
-    // Token
+    // Then check status
+    if (exhibitor.status !== "active") {
+      return res.status(403).json({
+        message: "Account not active. Please wait for admin approval.",
+      });
+    }
+
     const token = jwt.sign(
       { id: exhibitor._id, role: "exhibitor" },
       process.env.KEY,
       { expiresIn: "1d" }
     );
 
-    res.json({ token, exhibitor, message: "Login successfull"});
+    res.json({ token, exhibitor, message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: "Login failed", error });
   }
 };
+
+
 
 // ✅ Get all Exhibitors (Admin only)
 exports.getAllExhibitors = async (req, res) => {

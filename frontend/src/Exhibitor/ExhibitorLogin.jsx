@@ -13,39 +13,38 @@ export default function ExhibitorLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     if (!email || !password) {
       toast.error("Email and password are required!");
       return;
     }
-
+  
     try {
       setLoading(true);
-     await axios.post("http://localhost:4000/api/exhibitors/exhibitorlogin", {
+      
+      const response = await axios.post("http://localhost:4000/api/exhibitors/exhibitorlogin", {
         email,
         password,
-      }).then((a)=>{
-        toast.success(a.data.message);
-        // Redirect to Exhibitor Dashboard
-        window.location.href = "/exhibitordashboard";
-      }).catch((a)=>{
-        toast.error(a.data.message);
-
       });
-
-      // Backend should return exhibitor data with status
-   
-      
+  
+      const { token, exhibitor, message } = response.data;
+  
+      localStorage.setItem("exhibitorToken", token);
+      localStorage.setItem("exhibitorData", JSON.stringify(exhibitor));
+  
+      toast.success(message);
+  
+      window.location.href = "/exhibitordashboard";
       
     } catch (error) {
-  
-        toast.error(error.response?.data.message);
-
-   
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
   <div className="exhibitor-page">

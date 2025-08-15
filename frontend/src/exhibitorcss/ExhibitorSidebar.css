@@ -50,3 +50,24 @@
   font-size: 1.1rem;
   color: white;
 }
+/* Style Logout like sidebar links */
+.logout-link {
+  display: flex;             /* same as the Link */
+  align-items: center;       /* vertically center icon and text */
+  padding: 0.5rem 1rem;      /* match the sidebar link padding */
+  color: #dae0e6;            /* default text color, adjust to match your links */
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 700;          /* same as sidebar font weight */
+  font-size: 1rem;           /* match link font size */
+  border-radius: 0.25rem;    /* optional, if links have rounded corners */
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+/* Hover effect like links */
+.logout-link:hover {
+  color: #0d6efd; /* or your sidebar link hover color */
+  text-decoration: none;
+}
+
