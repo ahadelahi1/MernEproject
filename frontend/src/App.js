@@ -28,8 +28,8 @@ import ExhibitorDashboard from './Exhibitor/ExhibitorDashboard';
 import ExhibitorProfile from './Exhibitor/ExhibitorProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 import ExhibitorList from './pages/ExhibitorList';
-import ParticipationList from './components/ParticipationList';
-import AddParticipation from './components/AddParticipation';
+// import ParticipationList from './components/ParticipationList';
+// import AddParticipation from './components/AddParticipation';
 
 
 function AppContent() {
@@ -130,8 +130,8 @@ function AppContent() {
             <Route path="/booking" element={<BoothBooking />} />
             <Route path="/exhibitordashboard" element={<ExhibitorDashboard />} />
             <Route path="/exhibitorprofile" element={<ExhibitorProfile />} />
-            <Route path="/participation" element={<ParticipationList />} />
-<Route path="/participation/add" element={<AddParticipation />} />
+            {/* <Route path="/participation" element={<ParticipationList />} />
+<Route path="/participation/add" element={<AddParticipation />} /> */}
 
 
           </Routes>

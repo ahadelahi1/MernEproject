@@ -1,16 +1,27 @@
-import React, { useState } from "react";
-import ExhibitorSidebar from "../components/ExhibitorSidebar"; // Agar tumne sidebar alag banaya hai
-import "../exhibitorcss/ExhibitorProfile.css";
+import React, { useState, useEffect } from "react";
+import ExhibitorSidebar from "../components/ExhibitorSidebar";
 
 const ExhibitorProfile = () => {
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "0300-1234567",
-    status: "Active",
+    name: "",
+    email: "",
+    phone: "",
+    status: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const savedExhibitor = JSON.parse(localStorage.getItem("exhibitor"));
+    if (savedExhibitor) {
+      setProfile({
+        name: savedExhibitor.name,
+        email: savedExhibitor.email,
+        phone: savedExhibitor.phone,
+        status: savedExhibitor.status,
+      });
+    }
+  }, []);
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -19,6 +30,7 @@ const ExhibitorProfile = () => {
   const handleSave = () => {
     setIsEditing(false);
     alert("Profile updated successfully!");
+    // TODO: Backend update API call
   };
 
   return (
@@ -30,7 +42,6 @@ const ExhibitorProfile = () => {
           <h1 className="profile-title">My Profile</h1>
 
           <form>
-            {/* Name */}
             <label>Name</label>
             <input
               type="text"
@@ -38,9 +49,8 @@ const ExhibitorProfile = () => {
               value={profile.name}
               onChange={handleChange}
               disabled={!isEditing}
-              className={isEditing ? "input-editable" : "input-disabled"}
             />
-            {/* Email */}
+
             <label>Email</label>
             <input
               type="email"
@@ -48,10 +58,8 @@ const ExhibitorProfile = () => {
               value={profile.email}
               onChange={handleChange}
               disabled={!isEditing}
-              className={isEditing ? "input-editable" : "input-disabled"}
             />
 
-            {/* Phone */}
             <label>Phone Number</label>
             <input
               type="text"
@@ -59,26 +67,18 @@ const ExhibitorProfile = () => {
               value={profile.phone}
               onChange={handleChange}
               disabled={!isEditing}
-              className={isEditing ? "input-editable" : "input-disabled"}
             />
 
-            {/* Status */}
             <label>Status</label>
-            <input
-              type="text"
-              value={profile.status}
-              disabled
-              className="input-disabled"
-            />
+            <input type="text" value={profile.status} disabled />
 
-            {/* Buttons */}
-            <div className="btn-group">
+            <div>
               {isEditing ? (
-                <button type="button" onClick={handleSave} className="btn save-btn">
+                <button type="button" onClick={handleSave}>
                   Save
                 </button>
               ) : (
-                <button type="button" onClick={() => setIsEditing(true)} className="btn edit-btn">
+                <button type="button" onClick={() => setIsEditing(true)}>
                   Edit Profile
                 </button>
               )}

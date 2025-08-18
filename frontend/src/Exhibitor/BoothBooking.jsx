@@ -12,6 +12,8 @@ export default function BoothBooking() {
   const [expos, setExpos] = useState([]);
   const [selectedExpo, setSelectedExpo] = useState(null);
   const [booths, setBooths] = useState([]);
+  const [id, setid] = useState("");
+
   const [formData, setFormData] = useState({
     boothIds: [],
     bookingDate: "",
@@ -22,6 +24,9 @@ export default function BoothBooking() {
   const animatedComponents = makeAnimated();
 
   useEffect(() => {
+   
+   let exhibitordata=JSON.parse(localStorage.getItem("exhibitorData")) 
+   setid(exhibitordata._id)
     axios
       .get("http://localhost:4000/api/expos/all")
       .then((res) => setExpos(res.data))
@@ -72,24 +77,24 @@ export default function BoothBooking() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (formData.boothIds.length === 0 || !formData.bookingDate) {
       toast.error("Please select at least one booth and date!");
       return;
     }
-
-    if (!selectedExpo) {
-      toast.error("Please select an expo first!");
-      return;
-    }
-
+  
     try {
       setLoading(true);
-      await axios.post("http://localhost:4000/api/exhibitor/book-booth", {
-        ...formData,
-        expoId: selectedExpo._id,
+  
+      await axios.post("http://localhost:4000/api/book/bookBooth", {
+        eventId: selectedExpo._id,
+        exhibitorId:id, // logged in user id
+        boothIds: formData.boothIds, // 👈 now sending array directly
+        bookingDate: formData.bookingDate,
+        description: formData.description,
       });
-      toast.success("Booth(s) booked successfully!");
+  
+      toast.success("Booths booked successfully!");
       setFormData({
         boothIds: [],
         bookingDate: "",
@@ -103,6 +108,8 @@ export default function BoothBooking() {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <div className="exhibitor-page">
