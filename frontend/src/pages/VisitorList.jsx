@@ -11,7 +11,7 @@ const VisitorList = () => {
 
   const fetchVisitors = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/users/visitors", {
+      const res = await axios.get("http://localhost:4000/api/user/visitors", {
         params: { search, gender, sort }
       });
       setVisitors(res.data);

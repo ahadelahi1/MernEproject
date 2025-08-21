@@ -28,6 +28,8 @@ import ExhibitorDashboard from './Exhibitor/ExhibitorDashboard';
 import ExhibitorProfile from './Exhibitor/ExhibitorProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 import ExhibitorList from './pages/ExhibitorList';
+import Index from './WebPages/Index'
+
 // import ParticipationList from './components/ParticipationList';
 // import AddParticipation from './components/AddParticipation';
 
@@ -50,7 +52,8 @@ function AppContent() {
     '/login',
     '/fp',
     '/re',
-    '/admin-login'
+    '/admin-login',
+    '/Index'
   ];
 
   const isExhibitorRoute = exhibitorRoutes.some(route =>
@@ -132,6 +135,13 @@ function AppContent() {
             <Route path="/exhibitorprofile" element={<ExhibitorProfile />} />
             {/* <Route path="/participation" element={<ParticipationList />} />
 <Route path="/participation/add" element={<AddParticipation />} /> */}
+
+            {/* WebMain*/} 
+              <Route path="/Index" element={<Index/>} />
+
+
+
+
 
 
           </Routes>

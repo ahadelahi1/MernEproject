@@ -2,7 +2,70 @@ const fs = require("fs");
 const path = require("path");
 const Expo = require("../Models/Expo");
 
+const Hall = require("../Models/Hall");
+const Booth = require("../Models/Booth");
+const BoothBooking = require("../Models/BoothSchema");
+
 const ExpoController = {
+
+
+// GET /api/expos/:id/details
+getExpoDetails: async (req, res) => {
+  try {
+    const expoId = req.params.id;
+
+    // 1️⃣ Get Expo
+    const expo = await Expo.findById(expoId);
+    if (!expo) return res.status(404).json({ message: "Expo not found" });
+
+    // 2️⃣ Get Halls of this Expo
+    const halls = await Hall.find({ expoId });
+
+    // 3️⃣ For each hall, get booked booths only
+    const hallsWithBooths = await Promise.all(
+      halls.map(async (hall) => {
+        // All booths in this hall
+        const hallBooths = await Booth.find({ hall: hall._id });
+
+        // Booked booths with exhibitor
+        const bookings = await BoothBooking.find({ 
+          eventId: expoId,
+          boothId: { $in: hallBooths.map(b => b._id) } 
+        }).populate("exhibitorId", "name"); // populate exhibitor
+
+        // Map booths with exhibitor info (only booked booths)
+        const booths = bookings.map((b) => {
+          const boothInfo = hallBooths.find(booth => booth._id.equals(b.boothId));
+          return {
+            _id: b._id,
+            boothNumber: boothInfo ? boothInfo.stallNumber : "Unknown",
+            exhibitor: b.exhibitorId ? { name: b.exhibitorId.name } : null,
+          };
+        });
+
+        return {
+          _id: hall._id,
+          name: hall.hallNumber,
+          totalBooths: hall.numberOfBooths,
+          booths,
+        };
+      })
+    );
+
+    res.json({
+      _id: expo._id,
+      title: expo.title,
+      location: expo.location,
+      startDate: expo.startDate,
+      endDate: expo.endDate,
+      halls: hallsWithBooths,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch expo details", error: error.message });
+  }
+},
+
 
   Create: async (req, res) => {
     try {

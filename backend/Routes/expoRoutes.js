@@ -16,9 +16,10 @@ router.post(
     },
     ExpoController.Create
   );
-  router.get("/all", ExpoController.GetAll);
+router.get("/all", ExpoController.GetAll);
 router.get("/:id", ExpoController.GetOne);
 router.put("/:id", upload.single("image"), ExpoController.Update);
 router.delete("/:id", ExpoController.Delete);
+router.get("/:id/details",ExpoController.getExpoDetails);
 
 module.exports = router;
