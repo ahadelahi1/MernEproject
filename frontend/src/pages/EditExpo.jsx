@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "../AddEx.css";
 
 const EditExpo = () => {
   const { id } = useParams();
@@ -35,6 +36,22 @@ const EditExpo = () => {
       });
   }, [id]);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+      
+      if (!validTypes.includes(file.type)) {
+        toast.error("Only JPG, JPEG, PNG, or GIF images are allowed.");
+        e.target.value = null;
+        return;
+      }
+
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -66,99 +83,174 @@ const EditExpo = () => {
 
   return (
     <div className="expo-form-wrapper">
-      <h2 className="expo-form-heading">Edit Event</h2>
-      <form onSubmit={handleSubmit} className="expo-form">
-        <div className="row mb-4">
-          <div className="col-md-6">
-            <label className="form-label">Title</label>
-            <input
-              type="text"
-              className="form-control"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Location</label>
-            <input
-              type="text"
-              className="form-control"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+      {/* Header Section */}
+      <div className="expo-header">
+        <div className="expo-header-decoration"></div>
+        <h2 className="expo-form-heading">
+          <span className="heading-icon">✏️</span>
+          Edit Event
+        </h2>
+        <p className="expo-header-subtitle">
+          Update event details and make your expo even better
+        </p>
+      </div>
 
-        <div className="row mb-4">
-          <div className="col-md-6">
-            <label className="form-label">Theme</label>
-            <input
-              type="text"
-              className="form-control"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-            />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">Start Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              required
-            />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">End Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+      {/* Form Container */}
+      <div className="expo-form-container">
+        <form onSubmit={handleSubmit} className="expo-form">
 
-        <div className="mb-4">
-          <label className="form-label">Description</label>
-          <textarea
-            className="form-control"
-            rows="3"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
-        </div>
-
-        <div className="mb-4">
-          <label className="form-label">Change Image</label>
-          <input
-            type="file"
-            className="form-control"
-            accept="image/*"
-            onChange={(e) => {
-              setImage(e.target.files[0]);
-              setPreview(URL.createObjectURL(e.target.files[0]));
-            }}
-          />
-          {preview && (
-            <div className="mt-2">
-              <img
-                src={preview}
-                alt="Preview"
-                style={{ width: "150px", borderRadius: "8px" }}
+          {/* Title & Location */}
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📝</span>
+                Event Title
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter event title..."
+                required
               />
             </div>
-          )}
-        </div>
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📍</span>
+                Location
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Enter event location..."
+                required
+              />
+            </div>
+          </div>
 
-        <button type="submit" className="btn btn-primary px-5">
-          Update Expo
-        </button>
-      </form>
+          {/* Theme & Dates */}
+          <div className="form-row">
+            <div className="form-group form-group-large">
+              <label className="form-label">
+                <span className="label-icon">🎨</span>
+                Theme
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+                placeholder="Enter event theme..."
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📅</span>
+                Start Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  if (endDate && e.target.value > endDate) {
+                    setEndDate("");
+                  }
+                }}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📅</span>
+                End Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={endDate}
+                min={startDate || ""}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+                disabled={!startDate}
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="form-group full-width">
+            <label className="form-label">
+              <span className="label-icon">📄</span>
+              Description
+            </label>
+            <textarea
+              className="form-control form-textarea"
+              rows="4"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe your event in detail..."
+            ></textarea>
+          </div>
+
+          {/* Image Upload with Preview */}
+          <div className="form-group full-width">
+            <label className="form-label">
+              <span className="label-icon">🖼️</span>
+              Change Event Image
+            </label>
+            
+            {/* Current/Preview Image */}
+            {preview && (
+              <div className="image-preview-container">
+                <div className="image-preview-wrapper">
+                  <img
+                    src={preview}
+                    alt="Event Preview"
+                    className="image-preview"
+                  />
+                  <div className="image-preview-overlay">
+                    <span className="preview-text">Current Image</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* File Upload */}
+            <div className="file-upload-wrapper">
+              <input
+                type="file"
+                className="form-control file-input"
+                onChange={handleImageChange}
+                accept="image/*"
+                id="imageUpload"
+              />
+              <label htmlFor="imageUpload" className="file-upload-label">
+                <span className="file-upload-icon">🔄</span>
+                <span className="file-upload-text">
+                  {image ? image.name : "Choose new image (optional)"}
+                </span>
+              </label>
+            </div>
+            
+            <div className="upload-hint">
+              <span className="hint-icon">💡</span>
+              <span className="hint-text">Leave blank to keep current image</span>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="form-actions">
+            <button type="submit" className="btn-primary">
+              <span className="btn-icon">💾</span>
+              Update Event
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

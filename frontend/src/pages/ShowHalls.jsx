@@ -33,80 +33,183 @@ const ShowHalls = () => {
     }
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setHallNumber("");
+  };
+
   return (
     <div className="expo-list-wrapper">
-      <h2 className="expo-list-heading">Hall List</h2>
-
-      {/* Filter Row */}
-      <div className="filter-row d-flex mb-3">
-        {/* Search by Expo Title */}
-        <div className="search-wrap">
-          <input
-            type="text"
-            placeholder="Search by Expo Title..."
-            className="search-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <i className="bi bi-search search-icon"></i>
+      {/* Header Section */}
+      <div className="list-header">
+        <div className="list-header-decoration"></div>
+        <div className="list-header-content">
+          <h2 className="list-heading">
+            <span className="heading-icon">🏢</span>
+            Hall Management
+          </h2>
+          <p className="list-subtitle">
+            Manage and organize your exhibition halls
+          </p>
         </div>
-
-        {/* Filter by Hall Number */}
-        <input
-          type="number"
-          placeholder="Hall Number"
-          className="small-input"
-          value={hallNumber}
-          onChange={(e) => setHallNumber(e.target.value)}
-        />
+        <div className="header-actions">
+          <Link to="/halls/add" className="btn-add">
+            <span className="btn-icon">➕</span>
+            Add New Hall
+          </Link>
+        </div>
       </div>
 
-      <div className="d-flex justify-content-end mb-3">
-        <Link to="/halls/add" className="btn btn-primary shadow">
-          <i className="bi bi-plus-circle me-2"></i> Add Hall
-        </Link>
+      {/* Filters Section */}
+      <div className="filters-container">
+        <div className="filters-header">
+          <h3 className="filters-title">
+            <span className="filter-icon">🔍</span>
+            Search & Filter
+          </h3>
+          <button className="btn-clear-filters" onClick={clearFilters}>
+            <span className="clear-icon">🗑️</span>
+            Clear All
+          </button>
+        </div>
+        
+        <div className="filters-grid">
+          {/* Search Input */}
+          <div className="filter-group">
+            <label className="filter-label">
+              <span className="label-icon">🔎</span>
+              Search by Event Title
+            </label>
+            <div className="search-wrapper">
+              <input
+                type="text"
+                placeholder="Search by expo title..."
+                className="filter-input search-input"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <span className="search-icon">🔍</span>
+            </div>
+          </div>
+
+          {/* Hall Number Filter */}
+          <div className="filter-group">
+            <label className="filter-label">
+              <span className="label-icon">🏢</span>
+              Filter by Hall Number
+            </label>
+            <input
+              type="number"
+              placeholder="Enter hall number..."
+              className="filter-input"
+              value={hallNumber}
+              onChange={(e) => setHallNumber(e.target.value)}
+            />
+          </div>
+
+          {/* Empty column for grid layout consistency */}
+          <div className="filter-group"></div>
+        </div>
       </div>
 
-      <div className="table-responsive rounded shadow-sm">
-        <table className="table table-hover table-bordered align-middle bg-white expo-list-table">
-          <thead className="table-dark">
-            <tr>
-              <th>Hall Number</th>
-              <th>Booth Count</th>
-              <th>Event Title</th>
-              <th className="text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {halls.length > 0 ? (
-              halls.map((hall) => (
-                <tr key={hall._id}>
-                  <td className="fw-semibold">{hall.hallNumber}</td>
-                  <td>{hall.numberOfBooths}</td>
-                  <td>{hall.expoId?.title}</td>
-                  <td className="text-center">
-                    <Link
-                      to={`/halls/edit/${hall._id}`}
-                      className="btn btn-sm btn-outline-primary me-2"
-                    >
-                      <i className="bi bi-pencil-square"></i>
-                    </Link>
-                    <button
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() => handleDelete(hall._id)}
-                    >
-                      <i className="bi bi-trash3-fill"></i>
-                    </button>
+      {/* Results Summary */}
+      <div className="results-summary">
+        <div className="results-count">
+          <span className="count-icon">📊</span>
+          <span className="count-text">
+            {halls.length} {halls.length === 1 ? 'Hall' : 'Halls'} Found
+          </span>
+        </div>
+      </div>
+
+      {/* Table Container */}
+      <div className="table-container">
+        <div className="table-wrapper">
+          <table className="expo-table">
+            <thead className="table-head">
+              <tr>
+                <th className="th-title">
+                  <span className="th-icon">🏢</span>
+                  Hall Number
+                </th>
+                <th className="th-location">
+                  <span className="th-icon">📊</span>
+                  Booth Count
+                </th>
+                <th className="th-description">
+                  <span className="th-icon">📝</span>
+                  Event Title
+                </th>
+                <th className="th-actions">
+                  <span className="th-icon">⚙️</span>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="table-body">
+              {halls.length > 0 ? (
+                halls.map((hall, index) => (
+                  <tr key={hall._id} className="table-row" style={{ '--delay': `${index * 0.1}s` }}>
+                    <td className="td-title">
+                      <div className="title-container">
+                        <span className="title-text">Hall {hall.hallNumber}</span>
+                      </div>
+                    </td>
+                    <td className="td-location">
+                      <div className="location-container">
+                        <span className="location-icon">📊</span>
+                        <span className="location-text">{hall.numberOfBooths} Booths</span>
+                      </div>
+                    </td>
+                    <td className="td-description">
+                      <div className="description-container">
+                        <span className="description-text">
+                          {hall.expoId?.title || "No Event Assigned"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="td-actions">
+                      <div className="action-buttons">
+                        <Link
+                          to={`/halls/edit/${hall._id}`}
+                          className="btn-edit"
+                          title="Edit Hall"
+                        >
+                          <span className="action-icon">✏️</span>
+                        </Link>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(hall._id)}
+                          title="Delete Hall"
+                        >
+                          <span className="action-icon">🗑️</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr className="empty-row">
+                  <td colSpan="4" className="empty-cell">
+                    <div className="empty-state">
+                      <div className="empty-icon">🏢</div>
+                      <div className="empty-title">No Halls Found</div>
+                      <div className="empty-subtitle">
+                        {search || hallNumber
+                          ? "Try adjusting your filters to find more halls"
+                          : "Start by adding your first exhibition hall"}
+                      </div>
+                      <Link to="/halls/add" className="btn-empty-action">
+                        <span className="btn-icon">➕</span>
+                        Add First Hall
+                      </Link>
+                    </div>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center">No halls found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
