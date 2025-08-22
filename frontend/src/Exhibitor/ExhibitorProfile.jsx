@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ExhibitorSidebar from "../components/ExhibitorSidebar";
 
 const ExhibitorProfile = () => {
@@ -7,18 +10,20 @@ const ExhibitorProfile = () => {
     email: "",
     phone: "",
     status: "",
+    password: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const savedExhibitor = JSON.parse(localStorage.getItem("exhibitor"));
+    const savedExhibitor = JSON.parse(localStorage.getItem("exhibitorData"));
     if (savedExhibitor) {
       setProfile({
-        name: savedExhibitor.name,
-        email: savedExhibitor.email,
-        phone: savedExhibitor.phone,
-        status: savedExhibitor.status,
+        name: savedExhibitor.name || "",
+        email: savedExhibitor.email || "",
+        phone: savedExhibitor.phone || "",
+        status: savedExhibitor.status || "Inactive",
+        password: "",
       });
     }
   }, []);
@@ -27,10 +32,37 @@ const ExhibitorProfile = () => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert("Profile updated successfully!");
-    // TODO: Backend update API call
+  const handleSave = async () => {
+    try {
+      const savedExhibitor = JSON.parse(localStorage.getItem("exhibitorData"));
+      const exhibitorId = savedExhibitor._id;
+
+      const updateData = { ...profile };
+      if (!updateData.password) delete updateData.password;
+
+      const res = await axios.put(`http://localhost:4000/api/exhibitors/${exhibitorId}`, updateData);
+
+      const updatedExhibitor = { ...savedExhibitor, ...res.data.exhibitor };
+      localStorage.setItem("exhibitorData", JSON.stringify(updatedExhibitor));
+
+      setProfile({ ...profile, password: "" });
+      setIsEditing(false);
+
+      // Toast success notification
+      toast.success("Profile updated successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update profile. Try again!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   return (
@@ -69,10 +101,20 @@ const ExhibitorProfile = () => {
               disabled={!isEditing}
             />
 
+            <label>Password (optional)</label>
+            <input
+              type="password"
+              name="password"
+              value={profile.password}
+              onChange={handleChange}
+              disabled={!isEditing}
+              placeholder="Leave blank to keep current password"
+            />
+
             <label>Status</label>
             <input type="text" value={profile.status} disabled />
 
-            <div>
+            <div style={{ marginTop: "10px" }}>
               {isEditing ? (
                 <button type="button" onClick={handleSave}>
                   Save
@@ -86,6 +128,9 @@ const ExhibitorProfile = () => {
           </form>
         </div>
       </main>
+
+      {/* Toast container */}
+      <ToastContainer />
     </div>
   );
 };

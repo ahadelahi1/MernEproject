@@ -1,6 +1,8 @@
 const Exhibitor = require("../Models/Exhibitor");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const BoothBooking = require("../Models/BoothSchema");
+
 require("dotenv").config()
 // ✅ Exhibitor Register
 exports.registerExhibitor = async (req, res) => {
@@ -105,3 +107,58 @@ exports.updateExhibitorStatus = async (req, res) => {
 };
 
 
+exports.getDashboardData = async (req, res) => {
+  try {
+    const exhibitorId = req.params.exhibitorId; // ya req.user._id agar auth middleware use ho
+
+    // Exhibitor info
+    const exhibitor = await Exhibitor.findById(exhibitorId);
+    if (!exhibitor) return res.status(404).json({ message: "Exhibitor not found" });
+
+    // Total booths booked
+    const boothsBooked = await BoothBooking.countDocuments({ exhibitorId });
+
+    // Upcoming events
+    const bookings = await BoothBooking.find({ exhibitorId })
+      .populate("eventId", "title date")
+      .sort({ "eventId.date": 1 });
+
+    const upcomingEvents = bookings.map(b => b.eventId.title);
+
+    res.json({
+      status: exhibitor.status || "Inactive",
+      boothsBooked,
+      upcomingEvents,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+exports.updateExhibitor = async (req, res) => {
+  try {
+    const exhibitorId = req.params.exhibitorId;
+    const { name, email, password, status } = req.body;
+
+    const exhibitor = await Exhibitor.findById(exhibitorId);
+    if (!exhibitor) return res.status(404).json({ message: "Exhibitor not found" });
+
+    // Update fields
+    if (name) exhibitor.name = name;
+    if (email) exhibitor.email = email;
+    if (status) exhibitor.status = status;
+
+    if (password) {
+      // Encrypt password
+      const salt = await bcrypt.genSalt(10);
+      exhibitor.password = await bcrypt.hash(password, salt);
+    }
+
+    await exhibitor.save();
+
+    res.json({ message: "Profile updated successfully", exhibitor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
