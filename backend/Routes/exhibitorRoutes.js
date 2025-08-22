@@ -15,4 +15,6 @@ router.put("/:id/status", exhibitorController.updateExhibitorStatus);
 router.get("/:exhibitorId/dashboard", exhibitorController.getDashboardData);
 router.put("/:exhibitorId", exhibitorController.updateExhibitor);
 
+
+
 module.exports = router;

@@ -30,6 +30,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ExhibitorList from './pages/ExhibitorList';
 import Index from './WebPages/Index';
 import ParticipationList from './pages/ParticipationList';
+
+
+
 // import AddParticipation from './components/AddParticipation';
 
 function AppContent() {
@@ -41,7 +44,9 @@ function AppContent() {
     '/exhibitorlogin',
     '/booking',
     '/exhibitordashboard',
-    '/exhibitorprofile'
+    '/exhibitorprofile',
+    '/exhibitor-fp',
+    '/exhibitor-reset'
   ];
 
   // Pages jahan sidebar nahi chahiye
@@ -128,6 +133,10 @@ function AppContent() {
             <Route path="/booking" element={<BoothBooking />} />
             <Route path="/exhibitordashboard" element={<ExhibitorDashboard />} />
             <Route path="/exhibitorprofile" element={<ExhibitorProfile />} />
+            {/* Exhibitor Forget Password */}
+       
+
+
 
             {/* Web Main */}
             <Route path="/" element={<Index />} />

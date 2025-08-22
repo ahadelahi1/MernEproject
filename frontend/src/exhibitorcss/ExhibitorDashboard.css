@@ -1,15 +1,18 @@
+/* ----------------------------- */
 /* Container wrapping sidebar and main */
 .exhibitor-page {
   display: flex;
   min-height: 100vh;
-  background-color: #f0f4f8;
-  overflow: hidden;
+  background-color: #f5f7fa;
+  overflow: hidden; /* page scroll hat gaya */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ----------------------------- */
 /* Sidebar */
 .exhibitor-sidebar {
   width: 260px;
-  background-color: #1E2A38;
+  background-color: #1e2a38;
   color: #ffc107;
   padding: 30px 20px;
   display: flex;
@@ -19,6 +22,7 @@
   bottom: 0;
   left: 0;
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 .sidebar-brand {
@@ -34,7 +38,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow-y: auto;
 }
 
 .sidebar-link {
@@ -46,7 +49,6 @@
   text-decoration: none;
   border-radius: 8px;
   transition: background-color 0.3s ease;
-  cursor: pointer;
 }
 
 .sidebar-link:hover {
@@ -57,7 +59,6 @@
   font-size: 1.2rem;
 }
 
-/* Logout button */
 .logout-btn {
   margin-top: 20px;
   padding: 12px 15px;
@@ -74,74 +75,139 @@
   background-color: #c9302c;
 }
 
+/* ----------------------------- */
 /* Main content */
 .exhibitor-main {
   margin-left: 260px;
   flex: 1;
   padding: 40px 30px;
-  background-color: #f0f4f8;
+  background-color: #f5f7fa;
   min-height: 100vh;
   box-sizing: border-box;
-  overflow-y: auto;
+  /* overflow-y: auto; */ /* isse comment kar diya, poore page pe scroll nahi */
 }
 
+/* ----------------------------- */
 /* Dashboard title */
 .dashboard-title {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  margin-bottom: 30px;
-  color: #1E2A38;
+  margin-bottom: 25px;
+  color: #1e2a38;
+  text-align: center;
 }
 
-/* Cards container */
-.dashboard-cards {
+/* ----------------------------- */
+/* Rows for cards */
+.dashboard-card-row {
   display: flex;
-  gap: 30px;
+  gap: 25px;
   flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 25px;
 }
 
 /* Individual card */
 .dashboard-card {
-  background: white;
-  flex: 1 1 250px;
-  padding: 30px 40px;
+  background: #fff;
+  flex: 1 1 220px;
+  max-width: 250px;
+  min-height: 200px;
+  padding: 25px 20px;
   border-radius: 14px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
+  position: relative;
 }
 
 .dashboard-card:hover {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
+/* Card headings */
 .dashboard-card h2 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   color: #333;
 }
 
+/* Card numbers */
 .card-number {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
+  margin-top: 8px;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* ----------------------------- */
+/* Specific font size for Upcoming Events */
+.card-number.events {
+  font-size: 1.8rem; /* smaller font */
+  color: #38b2ac;
+}
+
+/* Colors for other numbers */
+.card-number.booths { color: #2d9cdb; }
+.card-number.status { color: #f6ad55; }
+
+/* ----------------------------- */
+/* Scrollable cards */
+.scrollable-card {
+  max-height: 250px;
+  overflow-y: auto; /* scrollbar sirf bottom row ke liye */
+}
+
+/* Scrollbar styling */
+.scrollable-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-card::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.scrollable-card::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+
+.scrollable-card::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* ----------------------------- */
+/* Booking list inside scrollable card */
+.booking-list {
+  text-align: left;
+  padding-left: 0;
+  list-style-type: none;
   margin-top: 10px;
 }
 
-/* Colors for numbers */
-.card-number.booths {
-  color: #2d9cdb; /* blue */
+.booking-list li {
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
 }
 
-.card-number.events {
-  color: #38b2ac; /* teal */
+.booking-list li:last-child {
+  border-bottom: none;
 }
 
-.card-number.status {
-  color: #f6ad55; /* orange-ish */
+/* ----------------------------- */
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .dashboard-card-row {
+    justify-content: space-around;
+  }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .exhibitor-sidebar {
     position: relative;
@@ -155,37 +221,13 @@
     padding: 20px 15px;
   }
 
-  .dashboard-cards {
+  .dashboard-card-row {
     flex-direction: column;
+    align-items: center;
   }
 
   .dashboard-card {
     flex: 1 1 100%;
+    max-width: 100%;
   }
-}
-
-.dashboard-details {
-  margin-top: 30px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.booking-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-.booking-table th,
-.booking-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-}
-
-.booking-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
 }

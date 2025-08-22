@@ -13,29 +13,29 @@ export default function ExhibitorLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     if (!email || !password) {
       toast.error("Email and password are required!");
       return;
     }
-  
+
     try {
       setLoading(true);
-      
+
       const response = await axios.post("http://localhost:4000/api/exhibitors/exhibitorlogin", {
         email,
         password,
       });
-  
+
       const { token, exhibitor, message } = response.data;
-  
+
       localStorage.setItem("exhibitorToken", token);
       localStorage.setItem("exhibitorData", JSON.stringify(exhibitor));
-  
+
       toast.success(message);
-  
+
       window.location.href = "/exhibitordashboard";
-      
+
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Login failed. Please try again.";
@@ -44,7 +44,7 @@ export default function ExhibitorLogin() {
       setLoading(false);
     }
   };
-  
+
 
   return (
   <div className="exhibitor-page">
@@ -69,6 +69,21 @@ export default function ExhibitorLogin() {
           <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
+          <br />
+       <div style={{ marginTop: "10px", textAlign: "right" }}>
+  <a
+  href="/exhibitor-fp"
+  style={{
+    color: "#007bff",
+    textDecoration: "none",
+    fontSize: "0.9rem"
+  }}
+>
+  Forget Password
+</a>
+
+</div>
+
         </form>
         <ToastContainer position="top-right" autoClose={3000} />
       </div>

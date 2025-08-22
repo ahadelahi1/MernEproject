@@ -98,12 +98,6 @@ exports.updateExhibitorStatus = async (req, res) => {
     res.status(500).json({ message: "Failed to update status", error });
   }
 
-// newww
-
-
-
-
-
 };
 
 
@@ -161,4 +155,33 @@ exports.updateExhibitor = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
+
+  // Exhibitor Forget Password (Request)
+exports.forgetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const exhibitor = await Exhibitor.findOne({ email });
+    if (!exhibitor) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    // Generate reset token (JWT with short expiry)
+    const resetToken = jwt.sign(
+      { id: exhibitor._id },
+      process.env.KEY,
+      { expiresIn: "15m" }
+    );
+
+    // Normally token email hota hai, abhi response me bhej dete hain
+    res.json({
+      message: "Password reset token generated",
+      resetToken,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error generating reset token", error });
+  }
+};
+
+
 };
