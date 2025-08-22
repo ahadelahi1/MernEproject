@@ -181,48 +181,113 @@ const Index = () => {
           </div>
         </div>
       </section>
+{/* Modal for Expo Details */}
+{showModal && modalData && (
+  <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+    <div className="modal-dialog modal-lg">
+      <div className="modal-content" style={{ borderRadius: '15px', border: 'none' }}>
+        
+        {/* Simple Header */}
+        <div 
+          className="modal-header text-white" 
+          style={{ 
+            background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+            borderRadius: '15px 15px 0 0',
+            border: 'none'
+          }}
+        >
+          <h5 className="modal-title fw-bold">{modalData.title}</h5>
+          <button 
+            type="button" 
+            className="btn-close btn-close-white"
+            onClick={() => setShowModal(false)}
+          ></button>
+        </div>
 
- {/* Modal for Expo Details */}
- {showModal && modalData && (
-        <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content p-4">
-              <div className="modal-header">
-                <h5 className="modal-title">{modalData.title} - Details</h5>
-                <button className="close" onClick={() => setShowModal(false)}>×</button>
+        <div className="modal-body p-4">
+          
+          {/* Basic Info */}
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <div className="p-3 bg-light rounded-3 mb-3">
+                <strong className="text-primary">📍 Location:</strong>
+                <div className="mt-1">{modalData.location}</div>
               </div>
-              <div className="modal-body">
-                <p><b>Location:</b> {modalData.location}</p>
-                <p><b>Dates:</b> {new Date(modalData.startDate).toLocaleDateString()} - {new Date(modalData.endDate).toLocaleDateString()}</p>
-
-                <h6>🏛 Halls:</h6>
-                {modalData.halls?.length > 0 ? (
-                  modalData.halls.map((hall) => (
-                    <div key={hall._id} className="mb-3">
-                      <p><b>{hall.name}</b> ({hall.totalBooths} booths)</p>
-                      {hall.booths.length > 0 ? (
-                        <ul>
-                          {hall.booths.map((booth) => (
-                            <li key={booth._id}>
-                              Booth #{booth.boothNumber} - 🏢 Exhibitor: {booth.exhibitor?.name}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>No booked booths in this hall</p>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <p>No halls found</p>
-                )}
+            </div>
+            <div className="col-md-6">
+              <div className="p-3 bg-light rounded-3 mb-3">
+                <strong className="text-success">📅 Dates:</strong>
+                <div className="mt-1">
+                  {new Date(modalData.startDate).toLocaleDateString()} - {new Date(modalData.endDate).toLocaleDateString()}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Rating Modal */}
+          {/* Halls */}
+          <h6 className="fw-bold mb-3 text-dark">🏛️ Exhibition Halls</h6>
+          
+          {modalData.halls?.length > 0 ? (
+            modalData.halls.map((hall) => (
+              <div key={hall._id} className="card mb-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
+                
+                <div className="card-header bg-white" style={{ borderBottom: '1px solid #f0f0f0' }}>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h6 className="mb-0 fw-semibold text-dark">{hall.name}</h6>
+                    <span className="badge bg-info rounded-pill px-3">
+                      {hall.totalBooths} booths
+                    </span>
+                  </div>
+                </div>
+
+                <div className="card-body">
+                  {hall.booths.length > 0 ? (
+                    <div className="row g-2">
+                      {hall.booths.map((booth) => (
+                        <div key={booth._id} className="col-md-6">
+                          <div 
+                            className="p-3 rounded-3" 
+                            style={{ backgroundColor: '#f8f9ff', border: '1px solid #e6e9ff' }}
+                          >
+                            <div className="d-flex align-items-center">
+                              <span 
+                                className="badge bg-warning text-dark me-3 px-2 py-1"
+                                style={{ fontSize: '0.75rem' }}
+                              >
+                                #{booth.boothNumber}
+                              </span>
+                              <div>
+                                <small className="text-muted">🏢 Exhibitor:</small>
+                                <div className="fw-medium text-dark" style={{ fontSize: '0.9rem' }}>
+                                  {booth.exhibitor?.name || 'Not assigned'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-3 text-muted">
+                      <div style={{ fontSize: '2rem' }}>📭</div>
+                      <small>No booked booths</small>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-4 text-muted">
+              <div style={{ fontSize: '3rem' }}>🏢</div>
+              <p className="mt-2 mb-0">No halls available</p>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  </div>
+)}      {/* Rating Modal */}
       {ratingModal && ratingEvent && (
         <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog modal-md">
