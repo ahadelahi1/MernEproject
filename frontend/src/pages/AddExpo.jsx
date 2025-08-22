@@ -103,20 +103,22 @@ const AddExpo = () => {
             />
           </div>
           <div className="col-md-3">
-            <label className="form-label">Start Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={startDate}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                if (endDate && e.target.value > endDate) {
-                  setEndDate("");
-                }
-              }}
-              required
-            />
-          </div>
+  <label className="form-label">Start Date</label>
+  <input
+    type="date"
+    className="form-control"
+    value={startDate}
+    min={new Date().toISOString().split("T")[0]} // Disable past dates
+    onChange={(e) => {
+      setStartDate(e.target.value);
+      if (endDate && e.target.value > endDate) {
+        setEndDate("");
+      }
+    }}
+    required
+  />
+</div>
+
           <div className="col-md-3">
             <label className="form-label">End Date</label>
             <input
