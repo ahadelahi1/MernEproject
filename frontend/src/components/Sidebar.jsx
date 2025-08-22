@@ -61,19 +61,12 @@ const Sidebar = () => {
       </div>
 
       {/* Manage Participation */}
-      <div className="dropdown-section">
-        <input type="checkbox" id="participation-toggle" />
-        <label htmlFor="participation-toggle" className="sidebar-link dropdown-label">
-          <i className="bi bi-diagram-3 me-2"></i> Manage Participation
-          <i className="bi bi-chevron-down ms-auto"></i>
-        </label>
-        <div className="dropdown-content">
-         
+     
           <Link to="/participation" className="dropdown-item-custom">
             <i className="bi bi-list-ul me-2"></i> Participation List
           </Link>
-        </div>
-      </div>
+       
+      
 
       {/* Exhibitors */}
       <Link to="/exhibitors" className="sidebar-link">
