@@ -191,7 +191,10 @@ const Index = () => {
         <div 
           className="modal-header text-white" 
           style={{ 
-            background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
+            background: '-webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b)), -webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b))',
+	          background: '-o-linear-gradient(left, #ee8425 0%, #f9488b 100%), -o-linear-gradient(left, #ee8425 0%, #f9488b 100%)',
+	          background: 'linear-gradient(to right, #ee8425 0%, #f9488b 100%), linear-gradient(to right, #ee8425 0%, #f9488b 100%)',
+            // background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
             borderRadius: '15px 15px 0 0',
             border: 'none'
           }}
@@ -247,7 +250,9 @@ const Index = () => {
                         <div key={booth._id} className="col-md-6">
                           <div 
                             className="p-3 rounded-3" 
-                            style={{ backgroundColor: '#f8f9ff', border: '1px solid #e6e9ff' }}
+                            style={{  background: '-webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b)), -webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b))',
+	          background: '-o-linear-gradient(left, #ee8425 0%, #f9488b 100%), -o-linear-gradient(left, #ee8425 0%, #f9488b 100%)',
+	          background: 'linear-gradient(to right, #ee8425 0%, #f9488b 100%), linear-gradient(to right, #ee8425 0%, #f9488b 100%)', }}
                           >
                             <div className="d-flex align-items-center">
                               <span 

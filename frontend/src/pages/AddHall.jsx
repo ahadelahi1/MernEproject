@@ -30,64 +30,99 @@ const AddHall = () => {
         navigate("/halls");
       })
       .catch((err) => {
-  if (err.response?.data?.message) {
-    toast.error(err.response.data.message);
-  } else {
-    toast.error("Error adding hall");
-  }
-});
-
+        if (err.response?.data?.message) {
+          toast.error(err.response.data.message);
+        } else {
+          toast.error("Error adding hall");
+        }
+      });
   };
 
   return (
     <div className="expo-form-wrapper">
-      <h2 className="expo-form-heading">Add Hall</h2>
-      <form onSubmit={handleSubmit} className="expo-form">
-        <div className="row mb-4">
-          <div className="col-md-6">
-            <label className="form-label">Hall Number</label>
-            <input
-              type="text"
-              className="form-control"
-              value={hallNumber}
-              onChange={(e) => setHallNumber(e.target.value)}
-              required
-            />
+      {/* Header Section */}
+      <div className="expo-header">
+        <div className="expo-header-decoration"></div>
+        <h2 className="expo-form-heading">
+          <span className="heading-icon">🏢</span>
+          Add New Hall
+        </h2>
+        <p className="expo-header-subtitle">
+          Configure exhibition halls and booth arrangements
+        </p>
+      </div>
+
+      {/* Form Container */}
+      <div className="expo-form-container">
+        <form onSubmit={handleSubmit} className="expo-form">
+
+          {/* Hall Number & Booth Count */}
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">🏛️</span>
+                Hall Number
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={hallNumber}
+                onChange={(e) => setHallNumber(e.target.value)}
+                placeholder="Enter hall number (e.g., A1, B2)"
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📊</span>
+                Number of Booths
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                value={boothCount}
+                onChange={(e) => setBoothCount(e.target.value)}
+                placeholder="Enter total booth count"
+                min="1"
+                required
+              />
+            </div>
           </div>
 
-          <div className="col-md-6">
-            <label className="form-label">Number of Booths</label>
-            <input
-              type="number"
-              className="form-control"
-              value={boothCount}
-              onChange={(e) => setBoothCount(e.target.value)}
-              required
-            />
+          {/* Select Event */}
+          <div className="form-group full-width">
+            <label className="form-label">
+              <span className="label-icon">🎯</span>
+              Select Event
+            </label>
+            <div className="select-wrapper">
+              <select
+                className="form-control form-select"
+                value={expoId}
+                onChange={(e) => setExpoId(e.target.value)}
+                required
+              >
+                <option value="">-- Choose an Event --</option>
+                {expos.map((expo) => (
+                  <option key={expo._id} value={expo._id}>
+                    {expo.title}
+                  </option>
+                ))}
+              </select>
+              <span className="select-arrow">▼</span>
+            </div>
           </div>
-        </div>
 
-        <div className="mb-4">
-          <label className="form-label">Select Event</label>
-          <select
-            className="form-select"
-            value={expoId}
-            onChange={(e) => setExpoId(e.target.value)}
-            required
-          >
-            <option value="">-- Select Event --</option>
-            {expos.map((expo) => (
-              <option key={expo._id} value={expo._id}>
-                {expo.title}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button type="submit" className="btn btn-primary px-5">
-          Add Hall
-        </button>
-      </form>
+          {/* Submit Button */}
+          <div className="form-actions">
+            <button type="submit" className="btn-primary">
+              <span className="btn-icon">🏢</span>
+              Add Hall
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

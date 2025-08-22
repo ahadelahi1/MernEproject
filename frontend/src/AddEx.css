@@ -1,50 +1,783 @@
-body {
-  background-color: #f8f9fa;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Base Styles */
+* {
+  box-sizing: border-box;
 }
 
-.expo-form-wrapper {
-  margin-left: 220px; /* for sidebar */
-  padding: 60px 80px;
-  background-color: #f4f6f9;
+body {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Main Container */
+.expo-form-wrapper {
+  margin-left: 220px;
+  padding: 40px 60px;
+  background: transparent;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+/* Header Section */
+.expo-header {
+  background: linear-gradient(135deg, #ffc107 0%, #ffed4a 100%);
+  border-radius: 24px;
+  padding: 50px 40px;
+  margin-bottom: 40px;
+  box-shadow: 0 20px 60px rgba(255, 193, 7, 0.25);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.expo-header-decoration {
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  opacity: 0.8;
 }
 
 .expo-form-heading {
-  font-size: 32px;
-  font-weight: 600;
+  font-size: 42px;
+  font-weight: 800;
   color: #2c3e50;
-  margin-bottom: 40px;
-  border-left: 6px solid#ffc107;
-  padding-left: 15px;
+  margin: 0 0 15px 0;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.form-label {
+.heading-icon {
+  font-size: 38px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.expo-header-subtitle {
+  font-size: 18px;
+  color: #5a6c7d;
+  margin: 0;
+  position: relative;
+  z-index: 2;
   font-weight: 500;
-  color: #2d2d2d;
+  opacity: 0.9;
 }
 
+/* Form Container */
+.expo-form-container {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 60px 50px;
+  box-shadow: 
+    0 30px 90px rgba(0, 0, 0, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(255, 193, 7, 0.1);
+  position: relative;
+}
+
+.expo-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #ffc107, #ffed4a, #ffc107);
+  border-radius: 28px 28px 0 0;
+}
+
+/* Form Layout */
+.expo-form {
+  max-width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 35px;
+}
+
+.form-group {
+  flex: 1;
+  position: relative;
+}
+
+.form-group-large {
+  flex: 2;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 35px;
+}
+
+/* Labels */
+.form-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.label-icon {
+  font-size: 16px;
+  filter: grayscale(0.3);
+}
+
+/* Form Controls */
 .form-control {
-  border-radius: 8px;
-  padding: 10px 14px;
-  border: 1px solid #ced4da;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  padding: 18px 24px;
+  border: 3px solid #e8ecef;
+  border-radius: 16px;
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 500;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #fafbfc;
+  outline: none;
+  color: #2c3e50;
+  box-sizing: border-box;
+}
+
+.form-control::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
 }
 
 .form-control:focus {
-  border-color:#ffc107;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
-  outline: none;
+  border-color: #ffc107;
+  background: #ffffff;
+  box-shadow: 
+    0 0 0 6px rgba(255, 193, 7, 0.12),
+    0 8px 32px rgba(255, 193, 7, 0.15);
+  transform: translateY(-2px);
+}
+
+.form-control:hover:not(:focus) {
+  border-color: #dde1e6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.form-control:disabled {
+  background: #f8f9fa;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Select Dropdown Styling */
+.select-wrapper {
+  position: relative;
+  display: block;
+}
+
+.form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 50px !important;
+  cursor: pointer;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus + .select-arrow {
+  color: #ffc107;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.form-select:hover + .select-arrow {
+  color: #6b7280;
+}
+
+/* Select Options Styling */
+.form-select option {
+  padding: 12px 16px;
+  background: #ffffff;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.form-select option:hover,
+.form-select option:checked {
+  background: #fff9e6;
+  color: #2c3e50;
+}
+
+.form-select option[value=""] {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Textarea */
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+/* File Upload */
+.file-upload-wrapper {
+  position: relative;
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 24px;
+  border: 3px dashed #e8ecef;
+  border-radius: 16px;
+  background: #fafbfc;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.file-upload-label:hover {
+  border-color: #ffc107;
+  background: #fff9e6;
+  color: #2c3e50;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255, 193, 7, 0.15);
+}
+
+.file-upload-icon {
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+.file-upload-text {
+  font-size: 16px;
+}
+
+/* Submit Button */
+.form-actions {
+  margin-top: 50px;
+  text-align: center;
 }
 
 .btn-primary {
-  background-color:#ffc107 !important;
+  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
   border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  color: black !important;
+  border-radius: 16px;
+  padding: 20px 50px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c3e50 !important;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 12px 40px rgba(255, 193, 7, 0.3),
+    0 4px 16px rgba(255, 193, 7, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
 }
 
 .btn-primary:hover {
-  background-color:#ffc107 !important;
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 20px 60px rgba(255, 193, 7, 0.4),
+    0 8px 32px rgba(255, 193, 7, 0.3);
+  background: linear-gradient(135deg, #ffcd38 0%, #ffc107 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: all 0.1s;
+}
+
+.btn-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Responsive Design */
+
+/* Large Desktop (1400px+) */
+@media (min-width: 1400px) {
+  .expo-form-wrapper {
+    padding: 60px 100px;
+  }
+  
+  .expo-form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Desktop (1200px - 1399px) */
+@media (max-width: 1399px) and (min-width: 1200px) {
+  .expo-form-wrapper {
+    margin-left: 220px;
+    padding: 50px 70px;
+  }
+}
+
+/* Medium Desktop (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .expo-form-wrapper {
+    margin-left: 200px;
+    padding: 40px 50px;
+  }
+  
+  .expo-form-container {
+    padding: 50px 40px;
+  }
+  
+  .expo-header {
+    padding: 40px 35px;
+  }
+  
+  .expo-form-heading {
+    font-size: 36px;
+  }
+  
+  .form-row {
+    gap: 25px;
+  }
+}
+
+/* Tablet Landscape (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+  .expo-form-wrapper {
+    margin-left: 180px;
+    padding: 30px 40px;
+  }
+  
+  .expo-form-container {
+    padding: 40px 30px;
+  }
+  
+  .expo-header {
+    padding: 30px 25px;
+  }
+  
+  .expo-form-heading {
+    font-size: 32px;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  .expo-header-subtitle {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-group-large {
+    flex: 1;
+  }
+}
+
+/* Tablet Portrait (576px - 767px) */
+@media (max-width: 767px) and (min-width: 576px) {
+  .expo-form-wrapper {
+    margin-left: 0;
+    padding: 20px 25px;
+  }
+  
+  .expo-form-container {
+    padding: 35px 25px;
+    border-radius: 20px;
+  }
+  
+  .expo-header {
+    padding: 25px 20px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+  }
+  
+  .expo-form-heading {
+    font-size: 28px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .heading-icon {
+    font-size: 32px;
+  }
+  
+  .expo-header-subtitle {
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 25px;
+  }
+  
+  .form-control {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+  
+  .form-textarea {
+    min-height: 100px;
+  }
+  
+  .btn-primary {
+    padding: 18px 40px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .form-actions {
+    margin-top: 40px;
+  }
+}
+
+/* Mobile (320px - 575px) */
+@media (max-width: 575px) {
+  .expo-form-wrapper {
+    margin-left: 0;
+    padding: 15px;
+  }
+  
+  .expo-form-container {
+    padding: 25px 20px;
+    border-radius: 16px;
+  }
+  
+  .expo-header {
+    padding: 20px 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+  }
+  
+  .expo-header-decoration {
+    width: 200px;
+    height: 200px;
+    top: -60px;
+    right: -60px;
+  }
+  
+  .expo-form-heading {
+    font-size: 24px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    line-height: 1.2;
+  }
+  
+  .heading-icon {
+    font-size: 28px;
+  }
+  
+  .expo-header-subtitle {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .full-width {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .label-icon {
+    font-size: 14px;
+  }
+  
+  .form-control {
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    border-width: 2px;
+  }
+  
+  .form-textarea {
+    min-height: 80px;
+  }
+  
+  .file-upload-label {
+    padding: 14px 16px;
+    border-radius: 12px;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+  
+  .file-upload-icon {
+    font-size: 20px;
+  }
+  
+  .file-upload-text {
+    font-size: 14px;
+  }
+  
+  .btn-primary {
+    padding: 16px 30px;
+    font-size: 14px;
+    width: 100%;
+    border-radius: 12px;
+  }
+  
+  .btn-icon {
+    font-size: 16px;
+  }
+  
+  .form-actions {
+    margin-top: 30px;
+  }
+}
+
+/* Extra Small Mobile (320px and below) */
+@media (max-width: 320px) {
+  .expo-form-wrapper {
+    padding: 10px;
+  }
+  
+  .expo-form-container {
+    padding: 20px 15px;
+  }
+  
+  .expo-header {
+    padding: 15px 10px;
+  }
+  
+  .expo-form-heading {
+    font-size: 20px;
+  }
+  
+  .form-control {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+  
+  .btn-primary {
+    padding: 14px 25px;
+    font-size: 13px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .expo-header {
+    padding: 20px 30px;
+  }
+  
+  .expo-form-heading {
+    font-size: 24px;
+  }
+  
+  .expo-header-subtitle {
+    font-size: 14px;
+  }
+  
+  .form-row {
+    margin-bottom: 20px;
+  }
+  
+  .form-actions {
+    margin-top: 25px;
+  }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .expo-form-container::before {
+    height: 8px;
+  }
+  
+  .form-control {
+    border-width: 2px;
+  }
+}
+
+/* Utility Classes for Better Responsive Control */
+.container-fluid {
+  width: 100%;
+  padding: 0 15px;
+}
+
+/* Hide sidebar on mobile */
+@media (max-width: 991px) {
+  .sidebar {
+    display: none !important;
+  }
+}
+
+/* Improved touch targets for mobile */
+@media (max-width: 767px) {
+  .form-control,
+  .file-upload-label,
+  .btn-primary {
+    min-height: 48px; /* Apple/Google recommended touch target */
+  }
+  
+  .form-label {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media (max-width: 767px) {
+  .form-control {
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+}
+
+/* Better scrolling on mobile */
+.expo-form-wrapper {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+}
+
+/* Ensure content doesn't overflow on small screens */
+.expo-form-container {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Print styles */
+@media print {
+  .expo-form-wrapper {
+    margin-left: 0 !important;
+    padding: 20px !important;
+    background: white !important;
+  }
+  
+  .expo-header {
+    background: #f8f9fa !important;
+    box-shadow: none !important;
+  }
+  
+  .expo-form-container {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+  
+  .btn-primary {
+    display: none !important;
+  }
+}
+
+/* Animation for form elements */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.expo-form-container {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.expo-header {
+  animation: slideInUp 0.6s ease-out 0.1s both;
+}
+
+/* Focus states for better accessibility */
+.form-control:focus,
+.file-upload-label:focus-within,
+.btn-primary:focus {
+  outline: 3px solid rgba(255, 193, 7, 0.5);
+  outline-offset: 2px;
+}
+
+/* Loading state for button */
+.btn-primary.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-primary.loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #2c3e50;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

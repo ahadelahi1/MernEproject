@@ -64,103 +64,153 @@ const AddExpo = () => {
 
   return (
     <div className="expo-form-wrapper">
-      <h2 className="expo-form-heading">Add New Event</h2>
-      <form onSubmit={handleSubmit} className="expo-form">
+      {/* Header Section */}
+      <div className="expo-header">
+        <div className="expo-header-decoration"></div>
+        <h2 className="expo-form-heading">
+          <span className="heading-icon">✨</span>
+          Add New Event
+        </h2>
+        <p className="expo-header-subtitle">
+          Create an amazing expo experience for your audience
+        </p>
+      </div>
 
-        {/* Title & Location */}
-        <div className="row mb-4">
-          <div className="col-md-6">
-            <label className="form-label">Title</label>
-            <input
-              type="text"
-              className="form-control"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
+      {/* Form Container */}
+      <div className="expo-form-container">
+        <form onSubmit={handleSubmit} className="expo-form">
+
+          {/* Title & Location */}
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📝</span>
+                Event Title
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter event title..."
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📍</span>
+                Location
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Enter event location..."
+                required
+              />
+            </div>
           </div>
-          <div className="col-md-6">
-            <label className="form-label">Location</label>
-            <input
-              type="text"
-              className="form-control"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-            />
+
+          {/* Theme & Dates */}
+          <div className="form-row">
+            <div className="form-group form-group-large">
+              <label className="form-label">
+                <span className="label-icon">🎨</span>
+                Theme
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+                placeholder="Enter event theme..."
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📅</span>
+                Start Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={startDate}
+                min={new Date().toISOString().split("T")[0]}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  if (endDate && e.target.value > endDate) {
+                    setEndDate("");
+                  }
+                }}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-icon">📅</span>
+                End Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={endDate}
+                min={startDate || ""}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+                disabled={!startDate}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Theme, Dates */}
-        <div className="row mb-4">
-          <div className="col-md-6">
-            <label className="form-label">Theme</label>
-            <input
-              type="text"
-              className="form-control"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-            />
+          {/* Description */}
+          <div className="form-group full-width">
+            <label className="form-label">
+              <span className="label-icon">📄</span>
+              Description
+            </label>
+            <textarea
+              className="form-control form-textarea"
+              rows="4"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe your event in detail..."
+            ></textarea>
           </div>
-          <div className="col-md-3">
-  <label className="form-label">Start Date</label>
-  <input
-    type="date"
-    className="form-control"
-    value={startDate}
-    min={new Date().toISOString().split("T")[0]} // Disable past dates
-    onChange={(e) => {
-      setStartDate(e.target.value);
-      if (endDate && e.target.value > endDate) {
-        setEndDate("");
-      }
-    }}
-    required
-  />
-</div>
 
-          <div className="col-md-3">
-            <label className="form-label">End Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={endDate}
-              min={startDate || ""}
-              onChange={(e) => setEndDate(e.target.value)}
-              required
-              disabled={!startDate}
-            />
+          {/* Image Upload */}
+          <div className="form-group full-width">
+            <label className="form-label">
+              <span className="label-icon">🖼️</span>
+              Event Image
+            </label>
+            <div className="file-upload-wrapper">
+              <input
+                type="file"
+                className="form-control file-input"
+                onChange={handleImageChange}
+                accept="image/*"
+                required
+                id="imageUpload"
+              />
+              <label htmlFor="imageUpload" className="file-upload-label">
+                <span className="file-upload-icon">📁</span>
+                <span className="file-upload-text">
+                  {image ? image.name : "Choose an image file"}
+                </span>
+              </label>
+            </div>
           </div>
-        </div>
 
-        {/* Description */}
-        <div className="mb-4">
-          <label className="form-label">Description</label>
-          <textarea
-            className="form-control"
-            rows="3"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
-        </div>
-
-        {/* Image Upload */}
-        <div className="mb-4">
-          <label className="form-label">Event Image</label>
-          <input
-            type="file"
-            className="form-control"
-            onChange={handleImageChange}
-            accept="image/*"
-            required
-          />
-        </div>
-
-        {/* Submit Button */}
-        <button type="submit" className="btn btn-primary px-5">
-          Save Event
-        </button>
-      </form>
+          {/* Submit Button */}
+          <div className="form-actions">
+            <button type="submit" className="btn-primary">
+              <span className="btn-icon">💾</span>
+              Save Event
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
