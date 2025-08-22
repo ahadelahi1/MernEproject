@@ -28,11 +28,9 @@ import ExhibitorDashboard from './Exhibitor/ExhibitorDashboard';
 import ExhibitorProfile from './Exhibitor/ExhibitorProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 import ExhibitorList from './pages/ExhibitorList';
-import Index from './WebPages/Index'
-
-// import ParticipationList from './components/ParticipationList';
+import Index from './WebPages/Index';
+import ParticipationList from './pages/ParticipationList';
 // import AddParticipation from './components/AddParticipation';
-
 
 function AppContent() {
   const location = useLocation();
@@ -46,23 +44,21 @@ function AppContent() {
     '/exhibitorprofile'
   ];
 
-  // Pages jahan koi sidebar nahi dikhana
+  // Pages jahan sidebar nahi chahiye
   const noSidebarRoutes = [
+    '/',
     '/register',
     '/login',
     '/fp',
     '/re',
-    '/admin-login',
-    '/Index'
+    '/admin-login'
   ];
 
   const isExhibitorRoute = exhibitorRoutes.some(route =>
     location.pathname.startsWith(route)
   );
 
-  const isNoSidebarRoute = noSidebarRoutes.some(route =>
-    location.pathname.startsWith(route)
-  );
+  const isNoSidebarRoute = noSidebarRoutes.includes(location.pathname);
 
   const showExhibitorSidebar = isExhibitorRoute;
   const showAdminSidebar = !isExhibitorRoute && !isNoSidebarRoute;
@@ -113,13 +109,12 @@ function AppContent() {
             <Route path="/visitors" element={
               <ProtectedRoute><VisitorList /></ProtectedRoute>
             } />
-               <Route path="/exhibitors" element={
+            <Route path="/exhibitors" element={
               <ProtectedRoute><ExhibitorList /></ProtectedRoute>
             } />
-
-            
-
-
+            <Route path="/participation" element={
+              <ProtectedRoute><ParticipationList /></ProtectedRoute>
+            } />
 
             {/* Normal Auth Routes */}
             <Route path="/register" element={<RegisterData />} />
@@ -133,16 +128,9 @@ function AppContent() {
             <Route path="/booking" element={<BoothBooking />} />
             <Route path="/exhibitordashboard" element={<ExhibitorDashboard />} />
             <Route path="/exhibitorprofile" element={<ExhibitorProfile />} />
-            {/* <Route path="/participation" element={<ParticipationList />} />
-<Route path="/participation/add" element={<AddParticipation />} /> */}
 
-            {/* WebMain*/} 
-              <Route path="/Index" element={<Index/>} />
-
-
-
-
-
+            {/* Web Main */}
+            <Route path="/" element={<Index />} />
 
           </Routes>
         </div>

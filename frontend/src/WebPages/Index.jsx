@@ -16,6 +16,11 @@ const Index = () => {
   const [modalData, setModalData] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  
+  const [ratingModal, setRatingModal] = useState(false);
+  const [ratingEvent, setRatingEvent] = useState(null);
+  const [rating, setRating] = useState(0);
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -46,6 +51,17 @@ const Index = () => {
     }
   };
 
+  const handleVisited = (event) => {
+    setRatingEvent(event);
+    setRatingModal(true);
+  };
+
+  const submitRating = () => {
+    console.log(`Rating for ${ratingEvent.title}: ${rating} stars`);
+    setRatingModal(false);
+    setRating(0);
+  };
+
   const renderCard = (event, type) => (
     <div className="col-lg-4 col-md-6 mb-4" key={event._id}>
       <div className="card shadow-sm border-0">
@@ -62,9 +78,16 @@ const Index = () => {
             {new Date(event.endDate).toLocaleDateString()}
           </p>
           {type === "ongoing" && (
-            <span className="text-success d-block mb-2">
-              ✅ Already Visited
-            </span>
+            <div className="mb-2">
+              <input 
+                type="checkbox" 
+                id={`visited-${event._id}`} 
+                onChange={() => handleVisited(event)}
+              />
+              <label htmlFor={`visited-${event._id}`} className="ms-2">
+                Mark as Visited
+              </label>
+            </div>
           )}
           <button
             className="btn-top primary-btn"
@@ -75,7 +98,6 @@ const Index = () => {
         </div>
       </div>
     </div>
-    
   );
 
   return (
@@ -160,45 +182,67 @@ const Index = () => {
         </div>
       </section>
 
-{/* Modal */}
-{showModal && modalData && (
-  <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
-    <div className="modal-dialog modal-lg">
-      <div className="modal-content p-4">
-        <div className="modal-header">
-          <h5 className="modal-title">{modalData.title} - Details</h5>
-          <button className="close" onClick={() => setShowModal(false)}>×</button>
-        </div>
-        <div className="modal-body">
-          <p><b>Location:</b> {modalData.location}</p>
-          <p><b>Dates:</b> {new Date(modalData.startDate).toLocaleDateString()} - {new Date(modalData.endDate).toLocaleDateString()}</p>
+ {/* Modal for Expo Details */}
+ {showModal && modalData && (
+        <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content p-4">
+              <div className="modal-header">
+                <h5 className="modal-title">{modalData.title} - Details</h5>
+                <button className="close" onClick={() => setShowModal(false)}>×</button>
+              </div>
+              <div className="modal-body">
+                <p><b>Location:</b> {modalData.location}</p>
+                <p><b>Dates:</b> {new Date(modalData.startDate).toLocaleDateString()} - {new Date(modalData.endDate).toLocaleDateString()}</p>
 
-          <h6>🏛 Halls:</h6>
-          {modalData.halls?.length > 0 ? (
-            modalData.halls.map((hall) => (
-              <div key={hall._id} className="mb-3">
-                <p><b>{hall.name}</b> ({hall.totalBooths} booths)</p>
-                {hall.booths.length > 0 ? (
-                  <ul>
-                    {hall.booths.map((booth) => (
-                      <li key={booth._id}>
-                        Booth #{booth.boothNumber} - 🏢 Exhibitor: {booth.exhibitor?.name}
-                      </li>
-                    ))}
-                  </ul>
+                <h6>🏛 Halls:</h6>
+                {modalData.halls?.length > 0 ? (
+                  modalData.halls.map((hall) => (
+                    <div key={hall._id} className="mb-3">
+                      <p><b>{hall.name}</b> ({hall.totalBooths} booths)</p>
+                      {hall.booths.length > 0 ? (
+                        <ul>
+                          {hall.booths.map((booth) => (
+                            <li key={booth._id}>
+                              Booth #{booth.boothNumber} - 🏢 Exhibitor: {booth.exhibitor?.name}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>No booked booths in this hall</p>
+                      )}
+                    </div>
+                  ))
                 ) : (
-                  <p>No booked booths in this hall</p>
+                  <p>No halls found</p>
                 )}
               </div>
-            ))
-          ) : (
-            <p>No halls found</p>
-          )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
+
+      {/* Rating Modal */}
+      {ratingModal && ratingEvent && (
+        <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog modal-md">
+            <div className="modal-content p-4 text-center">
+              <h5>Rate {ratingEvent.title}</h5>
+              <div className="my-3">
+                {[1,2,3,4,5].map((star) => (
+                  <span 
+                    key={star} 
+                    style={{ fontSize: "2rem", cursor: "pointer", color: star <= rating ? "gold" : "#ccc" }}
+                    onClick={() => setRating(star)}
+                  >★</span>
+                ))}
+              </div>
+              <button className="btn btn-primary" onClick={submitRating}>Submit Rating</button>
+              <button className="btn btn-secondary ms-2" onClick={() => setRatingModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
 
