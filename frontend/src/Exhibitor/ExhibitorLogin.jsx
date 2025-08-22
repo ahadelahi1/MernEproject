@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Link, } from 'react-router-dom';
 
 import ExhibitorSidebar from "../components/ExhibitorSidebar";
 import "../exhibitorcss/ExhibitorLogin.css";
@@ -71,16 +72,11 @@ export default function ExhibitorLogin() {
           </button>
           <br />
        <div style={{ marginTop: "10px", textAlign: "right" }}>
-  <a
-  href="/exhibitor-fp"
-  style={{
+   <Link  style={{
     color: "#007bff",
     textDecoration: "none",
     fontSize: "0.9rem"
-  }}
->
-  Forget Password
-</a>
+  }}className="mt-3" to="/">Forget Password</Link>
 
 </div>
 

@@ -44,9 +44,8 @@ function AppContent() {
     '/exhibitorlogin',
     '/booking',
     '/exhibitordashboard',
-    '/exhibitorprofile',
-    '/exhibitor-fp',
-    '/exhibitor-reset'
+    '/exhibitorprofile'
+
   ];
 
   // Pages jahan sidebar nahi chahiye
@@ -133,8 +132,8 @@ function AppContent() {
             <Route path="/booking" element={<BoothBooking />} />
             <Route path="/exhibitordashboard" element={<ExhibitorDashboard />} />
             <Route path="/exhibitorprofile" element={<ExhibitorProfile />} />
-            {/* Exhibitor Forget Password */}
-       
+      
+
 
 
 
