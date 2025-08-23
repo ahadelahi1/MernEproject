@@ -12,6 +12,8 @@ const adminRoutes = require('./Routes/adminRoutes');
 const userroutes = require('./Routes/userroutes');
 const exhibitorRoutes = require('./Routes/exhibitorRoutes');
 const bookingRoutes = require('./Routes/bookingRoute');
+const feedbackRoutes = require('./Routes/feedbackRoutes');
+
 
 const path = require("path");
 
@@ -34,6 +36,7 @@ app.use('/api/halls', hallRoutes);
 app.use('/api/booths', boothRoutes);
 app.use("/api/user/", userroutes);
 app.use("/api/book/", bookingRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 
 app.use('/api/exhibitors/', exhibitorRoutes);

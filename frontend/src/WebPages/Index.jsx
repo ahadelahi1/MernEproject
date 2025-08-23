@@ -7,6 +7,8 @@ import "./css/magnific-popup.css";
 import "./css/slicknav.min.css";
 import "./css/style.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { Link } from "react-router-dom";
+
 
 const Index = () => {
   const [ongoing, setOngoing] = useState([]);
@@ -16,10 +18,14 @@ const Index = () => {
   const [modalData, setModalData] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  
+  // ⭐ Feedback states
   const [ratingModal, setRatingModal] = useState(false);
   const [ratingEvent, setRatingEvent] = useState(null);
   const [rating, setRating] = useState(0);
+  const [feedbackText, setFeedbackText] = useState("");
+
+  // TODO: login user ka ID yahan dalna hoga (localStorage ya context se le lo)
+  const userId = "66c7a1f5d6a9a0abcdef1234"; 
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -56,11 +62,29 @@ const Index = () => {
     setRatingModal(true);
   };
 
-  const submitRating = () => {
-    console.log(`Rating for ${ratingEvent.title}: ${rating} stars`);
+ // ⭐ Submit feedback to backend
+const submitRating = async () => {
+  try {
+    const payload = {
+      user: userId,             // user ki _id
+      stars: rating,            // backend me "stars" field h
+      comment: feedbackText || "No comment",
+      event: ratingEvent._id    // event ki _id bhejna zaroori h
+    };
+
+    const res = await axios.post("http://localhost:4000/api/feedback/add", payload);
+
+    alert(res.data.message || "Feedback submitted successfully");
+
     setRatingModal(false);
     setRating(0);
-  };
+    setFeedbackText("");
+  } catch (err) {
+    console.error("Error submitting feedback:", err);
+    alert("Failed to submit feedback");
+  }
+};
+
 
   const renderCard = (event, type) => (
     <div className="col-lg-4 col-md-6 mb-4" key={event._id}>
@@ -102,29 +126,30 @@ const Index = () => {
 
   return (
     <>
-      {/* Header */}
       <header className="header-section">
-        <div className="container">
-          <div className="logo">
-            <a href="/">
-              <img src="logo.png" alt="Logo" />
-            </a>
-          </div>
-          <div className="nav-menu">
-            <nav className="mainmenu mobile-menu">
-              <ul>
-                <li className="active"><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
+  <div className="container header-container">
+    <div className="logo">
+      <Link to="/">
+        <img src="logo.png" alt="Logo" />
+      </Link>
+    </div>
+    <div className="nav-menu">
+      <nav className="mainmenu mobile-menu">
+        <ul>
+          <li className="active"><Link to="/">Home</Link></li>
+          <li><Link to="/about">About</Link></li>
+          <li><Link to="/contact">Contacts</Link></li>
+        </ul>
+      </nav>
+    </div>
+    {/* 👇 Login / Signup links */}
+    <div className="auth-links">
+      <Link to="/login" className="auth-link">Login</Link>
+      <Link to="/signup" className="auth-link">Signup</Link>
+    </div>
+  </div>
+</header>
 
-                <li><a href="/contact">Contacts</a></li>
-              </ul>
-            </nav>
-            <a href="#" className="primary-btn top-btn">
-              <i className="fa fa-ticket"></i> Ticket
-            </a>
-          </div>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <section
@@ -181,118 +206,90 @@ const Index = () => {
           </div>
         </div>
       </section>
-{/* Modal for Expo Details */}
-{showModal && modalData && (
-  <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-    <div className="modal-dialog modal-lg">
-      <div className="modal-content" style={{ borderRadius: '15px', border: 'none' }}>
-        
-        {/* Simple Header */}
-        <div 
-          className="modal-header text-white" 
-          style={{ 
-            background: '-webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b)), -webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b))',
-	          background: '-o-linear-gradient(left, #ee8425 0%, #f9488b 100%), -o-linear-gradient(left, #ee8425 0%, #f9488b 100%)',
-	          background: 'linear-gradient(to right, #ee8425 0%, #f9488b 100%), linear-gradient(to right, #ee8425 0%, #f9488b 100%)',
-            // background: 'linear-gradient(45deg, #4facfe, #00f2fe)',
-            borderRadius: '15px 15px 0 0',
-            border: 'none'
-          }}
-        >
-          <h5 className="modal-title fw-bold">{modalData.title}</h5>
-          <button 
-            type="button" 
-            className="btn-close btn-close-white"
-            onClick={() => setShowModal(false)}
-          ></button>
-        </div>
 
-        <div className="modal-body p-4">
-          
-          {/* Basic Info */}
-          <div className="row mb-4">
-            <div className="col-md-6">
-              <div className="p-3 bg-light rounded-3 mb-3">
-                <strong className="text-primary">📍 Location:</strong>
-                <div className="mt-1">{modalData.location}</div>
+      {/* Modal for Expo Details */}
+      {showModal && modalData && (
+        <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content" style={{ borderRadius: '15px', border: 'none' }}>
+              <div className="modal-header text-white" style={{ background: 'linear-gradient(to right, #ee8425, #f9488b)', borderRadius: '15px 15px 0 0', border: 'none' }}>
+                <h5 className="modal-title fw-bold">{modalData.title}</h5>
+                <button type="button" className="btn-close btn-close-white" onClick={() => setShowModal(false)}></button>
               </div>
-            </div>
-            <div className="col-md-6">
-              <div className="p-3 bg-light rounded-3 mb-3">
-                <strong className="text-success">📅 Dates:</strong>
-                <div className="mt-1">
-                  {new Date(modalData.startDate).toLocaleDateString()} - {new Date(modalData.endDate).toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Halls */}
-          <h6 className="fw-bold mb-3 text-dark">🏛️ Exhibition Halls</h6>
-          
-          {modalData.halls?.length > 0 ? (
-            modalData.halls.map((hall) => (
-              <div key={hall._id} className="card mb-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
-                
-                <div className="card-header bg-white" style={{ borderBottom: '1px solid #f0f0f0' }}>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h6 className="mb-0 fw-semibold text-dark">{hall.name}</h6>
-                    <span className="badge bg-info rounded-pill px-3">
-                      {hall.totalBooths} booths
-                    </span>
+              <div className="modal-body p-4">
+                <div className="row mb-4">
+                  <div className="col-md-6">
+                    <div className="p-3 bg-light rounded-3 mb-3">
+                      <strong className="text-primary">📍 Location:</strong>
+                      <div className="mt-1">{modalData.location}</div>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="p-3 bg-light rounded-3 mb-3">
+                      <strong className="text-success">📅 Dates:</strong>
+                      <div className="mt-1">
+                        {new Date(modalData.startDate).toLocaleDateString()} - {new Date(modalData.endDate).toLocaleDateString()}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="card-body">
-                  {hall.booths.length > 0 ? (
-                    <div className="row g-2">
-                      {hall.booths.map((booth) => (
-                        <div key={booth._id} className="col-md-6">
-                          <div 
-                            className="p-3 rounded-3" 
-                            style={{  background: '-webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b)), -webkit-gradient(linear, left top, right top, from(#ee8425), to(#f9488b))',
-	          background: '-o-linear-gradient(left, #ee8425 0%, #f9488b 100%), -o-linear-gradient(left, #ee8425 0%, #f9488b 100%)',
-	          background: 'linear-gradient(to right, #ee8425 0%, #f9488b 100%), linear-gradient(to right, #ee8425 0%, #f9488b 100%)', }}
-                          >
-                            <div className="d-flex align-items-center">
-                              <span 
-                                className="badge bg-warning text-dark me-3 px-2 py-1"
-                                style={{ fontSize: '0.75rem' }}
-                              >
-                                #{booth.boothNumber}
-                              </span>
-                              <div>
-                                <small className="text-muted">🏢 Exhibitor:</small>
-                                <div className="fw-medium text-dark" style={{ fontSize: '0.9rem' }}>
-                                  {booth.exhibitor?.name || 'Not assigned'}
+                {/* Halls */}
+                <h6 className="fw-bold mb-3 text-dark">🏛️ Exhibition Halls</h6>
+                {modalData.halls?.length > 0 ? (
+                  modalData.halls.map((hall) => (
+                    <div key={hall._id} className="card mb-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
+                      <div className="card-header bg-white" style={{ borderBottom: '1px solid #f0f0f0' }}>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <h6 className="mb-0 fw-semibold text-dark">{hall.name}</h6>
+                          <span className="badge bg-info rounded-pill px-3">
+                            {hall.totalBooths} booths
+                          </span>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        {hall.booths.length > 0 ? (
+                          <div className="row g-2">
+                            {hall.booths.map((booth) => (
+                              <div key={booth._id} className="col-md-6">
+                                <div className="p-3 rounded-3" style={{ background: 'linear-gradient(to right, #ee8425, #f9488b)' }}>
+                                  <div className="d-flex align-items-center">
+                                    <span className="badge bg-warning text-dark me-3 px-2 py-1" style={{ fontSize: '0.75rem' }}>
+                                      #{booth.boothNumber}
+                                    </span>
+                                    <div>
+                                      <small className="text-muted">🏢 Exhibitor:</small>
+                                      <div className="fw-medium text-dark" style={{ fontSize: '0.9rem' }}>
+                                        {booth.exhibitor?.name || 'Not assigned'}
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            ))}
                           </div>
-                        </div>
-                      ))}
+                        ) : (
+                          <div className="text-center py-3 text-muted">
+                            <div style={{ fontSize: '2rem' }}>📭</div>
+                            <small>No booked booths</small>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  ) : (
-                    <div className="text-center py-3 text-muted">
-                      <div style={{ fontSize: '2rem' }}>📭</div>
-                      <small>No booked booths</small>
-                    </div>
-                  )}
-                </div>
+                  ))
+                ) : (
+                  <div className="text-center py-4 text-muted">
+                    <div style={{ fontSize: '3rem' }}>🏢</div>
+                    <p className="mt-2 mb-0">No halls available</p>
+                  </div>
+                )}
               </div>
-            ))
-          ) : (
-            <div className="text-center py-4 text-muted">
-              <div style={{ fontSize: '3rem' }}>🏢</div>
-              <p className="mt-2 mb-0">No halls available</p>
             </div>
-          )}
-
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}      {/* Rating Modal */}
+      )}
+
+      {/* ⭐ Rating Modal */}
       {ratingModal && ratingEvent && (
         <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog modal-md">
@@ -307,14 +304,21 @@ const Index = () => {
                   >★</span>
                 ))}
               </div>
-              <button className="btn btn-primary" onClick={submitRating}>Submit Rating</button>
+
+              {/* Feedback textarea */}
+              <textarea
+                className="form-control mb-3"
+                placeholder="Write your feedback..."
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+              ></textarea>
+
+              <button className="btn btn-primary" onClick={submitRating}>Submit Feedback</button>
               <button className="btn btn-secondary ms-2" onClick={() => setRatingModal(false)}>Cancel</button>
             </div>
           </div>
         </div>
       )}
-
-
 
       {/* Footer */}
       <footer className="footer-section">
