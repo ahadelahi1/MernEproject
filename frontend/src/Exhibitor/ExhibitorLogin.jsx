@@ -72,11 +72,11 @@ export default function ExhibitorLogin() {
           </button>
           <br />
        <div style={{ marginTop: "10px", textAlign: "right" }}>
-   <Link  style={{
+   {/* <Link  style={{
     color: "#007bff",
     textDecoration: "none",
     fontSize: "0.9rem"
-  }}className="mt-3" to="/">Forget Password</Link>
+  }}className="mt-3" to="/">Forget Password</Link> */}
 
 </div>
 
