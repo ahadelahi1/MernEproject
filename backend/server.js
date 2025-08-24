@@ -14,6 +14,7 @@ const userroutes = require("./Routes/userroutes");
 const exhibitorRoutes = require("./Routes/exhibitorRoutes");
 const bookingRoutes = require("./Routes/bookingRoute");
 const feedbackRoutes = require("./Routes/feedbackRoutes");
+const contactRoutes = require('./Routes/contactRoutes');
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.use("/api/user", userroutes);
 app.use("/api/book", bookingRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/exhibitors", exhibitorRoutes);
+
+app.use('/api/contact', contactRoutes);
 
 // Static serve for images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
