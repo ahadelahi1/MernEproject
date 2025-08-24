@@ -147,13 +147,7 @@ const ExhibitorDashboard = () => {
               </div>
             </div>
 
-            <div className="stat-card stat-card-purple">
-              <div className="stat-icon">💰</div>
-              <div className="stat-content">
-                <h3>Revenue</h3>
-                <div className="stat-value">₨{(dashboardData.boothsBooked * 25).toLocaleString()}K</div>
-              </div>
-            </div>
+
           </div>
 
           {/* Activity Grid - Responsive */}
@@ -190,49 +184,7 @@ const ExhibitorDashboard = () => {
               </div>
             </div>
 
-            {/* Quick Actions Card */}
-            <div className="activity-card">
-              <h3>
-                <div className="card-accent purple"></div>
-                Quick Actions
-              </h3>
-              <div className="activity-content">
-                <div className="activity-item blue">
-                  <span>📋 Book New Booth</span>
-                  <div className="activity-badge blue">Action</div>
-                </div>
-                <div className="activity-item orange">
-                  <span>👤 Update Profile</span>
-                  <div className="activity-badge orange">Manage</div>
-                </div>
-                <div className="activity-item purple">
-                  <span>🎪 Browse Events</span>
-                  <div className="activity-badge purple">Explore</div>
-                </div>
-              </div>
-            </div>
 
-            {/* Recent Activity Card */}
-            <div className="activity-card full-width">
-              <h3>
-                <div className="card-accent green"></div>
-                Recent Activity
-              </h3>
-              <div className="activity-content">
-                <div className="activity-item green">
-                  <span>✅ Booth booking confirmed for Tech Expo 2024</span>
-                  <div className="activity-badge green">2h ago</div>
-                </div>
-                <div className="activity-item blue">
-                  <span>💰 Payment received - ₨25,000</span>
-                  <div className="activity-badge blue">1d ago</div>
-                </div>
-                <div className="activity-item orange">
-                  <span>📝 Profile updated successfully</span>
-                  <div className="activity-badge orange">3d ago</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </main>
