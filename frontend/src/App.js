@@ -54,15 +54,20 @@ function AppContent() {
     '/register',
     '/login',
     '/fp',
-    '/re',
-    '/admin-login'
+    '/re/:token',
+    '/admin-login',
   ];
 
   const isExhibitorRoute = exhibitorRoutes.some(route =>
     location.pathname.startsWith(route)
   );
 
-  const isNoSidebarRoute = noSidebarRoutes.includes(location.pathname);
+// special case for reset password
+const isResetPasswordRoute = location.pathname.startsWith('/re/');
+
+const isNoSidebarRoute =
+  noSidebarRoutes.includes(location.pathname) || isResetPasswordRoute;
+
 
   const showExhibitorSidebar = isExhibitorRoute;
   const showAdminSidebar = !isExhibitorRoute && !isNoSidebarRoute;
@@ -132,7 +137,7 @@ function AppContent() {
             <Route path="/booking" element={<BoothBooking />} />
             <Route path="/exhibitordashboard" element={<ExhibitorDashboard />} />
             <Route path="/exhibitorprofile" element={<ExhibitorProfile />} />
-      
+
 
 
 
