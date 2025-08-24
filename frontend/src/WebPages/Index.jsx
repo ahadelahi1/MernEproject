@@ -1,22 +1,16 @@
 // src/WebPages/Index.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./css/bootstrap.min.css";
-import "./css/font-awesome.min.css";
-import "./css/elegant-icons.css";
-import "./css/magnific-popup.css";
-import "./css/slicknav.min.css";
-import "./css/style.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import './css/style.css'; // Import the new CSS file
 import { Link, useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [ongoing, setOngoing] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
-  const [popular, setPopular] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalData, setModalData] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // auth state (navbar)
   const [currentUser, setCurrentUser] = useState(() => {
@@ -36,7 +30,8 @@ const Index = () => {
   const nav = useNavigate();
 
   useEffect(() => {
-    const fetchEventsAndPopular = async () => {
+    const fetchEvents = async () => {
+      setIsLoading(true);
       try {
         const res = await axios.get("http://localhost:4000/api/expos/all");
         const events = res.data;
@@ -49,32 +44,13 @@ const Index = () => {
 
         setOngoing(ongoingEvts);
         setUpcoming(upcomingEvts);
-
-        // popular = avg rating >= 4
-        try {
-          const fb = await axios.get("http://localhost:4000/api/feedback/all");
-          const list = fb.data || [];
-          const totals = {}; // {eventId: {sum, count}}
-          list.forEach((f) => {
-            const id = f.event?._id || f.event; // populated or raw id
-            if (!id) return;
-            if (!totals[id]) totals[id] = { sum: 0, count: 0 };
-            totals[id].sum += Number(f.rating || 0);
-            totals[id].count += 1;
-          });
-          const avg = Object.fromEntries(
-            Object.entries(totals).map(([k, v]) => [k, v.sum / v.count])
-          );
-          const popularEvts = events.filter((e) => (avg[e._id] || 0) >= 4);
-          setPopular(popularEvts);
-        } catch {
-          setPopular([]);
-        }
       } catch (err) {
         console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchEventsAndPopular();
+    fetchEvents();
   }, []);
 
   const handleViewMore = async (eventId) => {
@@ -114,7 +90,7 @@ const Index = () => {
 
     try {
       const payload = {
-        rating, // correct key
+        rating,
         comment: feedbackText || "No comment",
         event: ratingEvent._id,
       };
@@ -153,283 +129,273 @@ const Index = () => {
   };
 
   const renderCard = (event, type) => (
-    <div className="col-lg-4 col-md-6 mb-4" key={event._id}>
-      <div className="card shadow-sm border-0">
-        <img
-          src={`http://localhost:4000/uploads/${event.image}`}
-          className="card-img-top"
-          alt={event.title}
-        />
-        <div className="card-body text-center">
-          <h5 className="card-title">{event.title}</h5>
-          <p className="card-text">
-            📍 {event.location} <br />
-            🗓 {new Date(event.startDate).toLocaleDateString()} -{" "}
-            {new Date(event.endDate).toLocaleDateString()}
-          </p>
-          {type === "ongoing" && (
-            <div className="mb-2">
-              <input
-                type="checkbox"
-                id={`visited-${event._id}`}
-                onChange={() => handleVisited(event)}
-              />
-              <label htmlFor={`visited-${event._id}`} className="ms-2">
+    <div className="event-card-wrapper" key={event._id}>
+      <div className="event-card">
+        <div className="event-image-container">
+          <img
+            src={`http://localhost:4000/uploads/${event.image}`}
+            className="event-image"
+            alt={event.title}
+          />
+          <div className="event-status-badge">
+            {type === "ongoing" ? "🟢 Live" : "🔜 Soon"}
+          </div>
+        </div>
+        <div className="event-content">
+          <h3 className="event-title">{event.title}</h3>
+          <div className="event-info">
+            <div className="info-item">
+              <i className="icon">📍</i>
+              <span>{event.location}</span>
+            </div>
+            <div className="info-item">
+              <i className="icon">📅</i>
+              <span>
+                {new Date(event.startDate).toLocaleDateString()} - {" "}
+                {new Date(event.endDate).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+          
+          <div className="event-actions">
+            {type === "ongoing" && (
+              <label className="visited-checkbox">
+                <input
+                  type="checkbox"
+                  onChange={() => handleVisited(event)}
+                />
+                <span className="checkmark"></span>
                 Mark as Visited
               </label>
-            </div>
-          )}
-          <button
-            className="btn-top primary-btn"
-            onClick={() => handleViewMore(event._id)}
-          >
-            View More
-          </button>
+            )}
+            <button
+              className="btn-view-more"
+              onClick={() => handleViewMore(event._id)}
+            >
+              View Details
+              <i className="btn-icon">→</i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <>
-      <header className="header-section">
-        <div className="container header-container">
-          <div className="logo">
-            <Link to="/">
-              <img src="logo.png" alt="Logo" />
-            </Link>
-          </div>
-          <div className="nav-menu">
-            <nav className="mainmenu mobile-menu">
-              <ul>
-                <li className="active">
-                  <Link to="/">Home</Link>
-                </li>
-                <li>
-                  <Link to="/About">About</Link>
-                </li>
-                <li>
-                  <Link to="/contact">Contacts</Link>
-                </li>
-              </ul>
+    <div className="app-container">
+      {/* Header */}
+      <header className="header">
+        <div className="container">
+          <div className="header-content">
+            <div className="logo">
+              <Link to="/" className="logo-link">
+                <div className="logo-icon">🎪</div>
+                <span className="logo-text">EventSphere</span>
+              </Link>
+            </div>
+            
+            <nav className="nav-menu">
+              <Link to="/" className="nav-link active">Home</Link>
+              <Link to="/About" className="nav-link">About</Link>
+              <Link to="/contact" className="nav-link">Contact</Link>
             </nav>
-          </div>
 
-          <div className="auth-links">
-            {currentUser ? (
-              <>
-                <span className="auth-link" style={{ cursor: "default" }}>
-                  {currentUser.name || "User"}
-                </span>
-                <button
-                  className="auth-link"
-                  style={{
-                    border: "none",
-                    background: "transparent",
-                    cursor: "pointer",
-                  }}
-                  onClick={logout}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="auth-link">
-                  Login
-                </Link>
-                <Link to="/register" className="auth-link">
-                  Signup
-                </Link>
-              </>
-            )}
+            <div className="auth-section">
+              {currentUser ? (
+                <div className="user-menu">
+                  <span className="welcome-text">
+                    Welcome, {currentUser.name || "User"}!
+                  </span>
+                  <button className="btn-logout" onClick={logout}>
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="auth-buttons">
+                  <Link to="/login" className="btn-auth btn-login">
+                    Login
+                  </Link>
+                  <Link to="/register" className="btn-auth btn-register">
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section
-        className="hero-section set-bg"
-        style={{ backgroundImage: "url('hero.jpg')" }}
-      >
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="hero-background">
+          <div className="hero-shape hero-shape-1"></div>
+          <div className="hero-shape hero-shape-2"></div>
+          <div className="hero-shape hero-shape-3"></div>
+        </div>
+        
         <div className="container">
-          <div className="row">
-            <div className="col-lg-7">
-              <div className="hero-text">
-                <span>5 to 9 May 2019, Mardavall Hotel, New York</span>
-                <h2>
-                  Change Your Mind
-                  <br /> To Become Success
-                </h2>
-                <a href="#" className="primary-btn">
-                  Buy Ticket
+          <div className="hero-content">
+            <div className="hero-text">
+              <div className="hero-badge">
+                <span>✨ Discover Amazing Events</span>
+              </div>
+              <h1 className="hero-title">
+                Explore, Experience
+                <span className="title-highlight">Excellence</span>
+              </h1>
+              <p className="hero-subtitle">
+                Join thousands of visitors discovering incredible exhibitions, 
+                connecting with innovators, and creating unforgettable memories.
+              </p>
+              <div className="hero-buttons">
+                <a href="#events" className="btn-hero-primary">
+                  Explore Events
+                  <i className="btn-icon">🎯</i>
                 </a>
+                <Link to="/about" className="btn-hero-secondary">
+                  Learn More
+                </Link>
               </div>
             </div>
-            <div className="col-lg-5">
-              <img src="hero-right.png" alt="Hero" />
+            
+            <div className="hero-visual">
+              <div className="hero-illustration">
+                <div className="illustration-bg">
+                  <div className="floating-element floating-1">🎪</div>
+                  <div className="floating-element floating-2">🎨</div>
+                  <div className="floating-element floating-3">🚀</div>
+                  <div className="floating-element floating-4">⭐</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Ongoing */}
-      <section className="spad">
-        <div className="container">
-          <h2 className="text-center mb-5">Ongoing Events</h2>
-          <div className="row">
-            {ongoing.length > 0 ? (
-              ongoing.map((e) => renderCard(e, "ongoing"))
-            ) : (
-              <p>No ongoing events</p>
-            )}
+      {/* Main Content */}
+      <main className="main-content" id="events">
+        {isLoading ? (
+          <div className="loading-container">
+            <div className="loading-spinner">
+              <div className="spinner"></div>
+              <p>Loading events...</p>
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Upcoming */}
-      <section className="spad bg-light">
-        <div className="container">
-          <h2 className="text-center mb-5">Upcoming Events</h2>
-          <div className="row">
-            {upcoming.length > 0 ? (
-              upcoming.map((e) => renderCard(e, "upcoming"))
-            ) : (
-              <p>No upcoming events</p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Popular */}
-      <section className="spad">
-        <div className="container">
-          <h2 className="text-center mb-5">Popular Events</h2>
-          <div className="row">
-            {popular.length > 0 ? (
-              popular.map((e) => renderCard(e, "popular"))
-            ) : (
-              <p>No popular events</p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Modal for Expo Details */}
-      {showModal && modalData && (
-        <div
-          className="modal fade show d-block"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog modal-lg">
-            <div
-              className="modal-content"
-              style={{ borderRadius: "15px", border: "none" }}
-            >
-              <div
-                className="modal-header text-white"
-                style={{
-                  background: "linear-gradient(to right, #ee8425, #f9488b)",
-                  borderRadius: "15px 15px 0 0",
-                  border: "none",
-                }}
-              >
-                <h5 className="modal-title fw-bold">{modalData.title}</h5>
-                <button
-                  type="button"
-                  className="btn-close btn-close-white"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body p-4">
-                <div className="row mb-4">
-                  <div className="col-md-6">
-                    <div className="p-3 bg-light rounded-3 mb-3">
-                      <strong className="text-primary">📍 Location:</strong>
-                      <div className="mt-1">{modalData.location}</div>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="p-3 bg-light rounded-3 mb-3">
-                      <strong className="text-success">📅 Dates:</strong>
-                      <div className="mt-1">
-                        {new Date(modalData.startDate).toLocaleDateString()} -{" "}
-                        {new Date(modalData.endDate).toLocaleDateString()}
-                      </div>
-                    </div>
+        ) : (
+          <>
+            {/* Ongoing Events */}
+            <section className="events-section">
+              <div className="container">
+                <div className="section-header">
+                  <div className="section-title">
+                    <h2>🎪 Ongoing Events</h2>
+                    <p>Experience these amazing events happening right now</p>
                   </div>
                 </div>
+                
+                <div className="events-grid">
+                  {ongoing.length > 0 ? (
+                    ongoing.map((e) => renderCard(e, "ongoing"))
+                  ) : (
+                    <div className="empty-state">
+                      <div className="empty-icon">📅</div>
+                      <h3>No ongoing events at the moment</h3>
+                      <p>Check back soon for exciting upcoming events!</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
 
-                {/* Halls */}
-                <h6 className="fw-bold mb-3 text-dark">🏛️ Exhibition Halls</h6>
+            {/* Upcoming Events */}
+            <section className="events-section upcoming-section">
+              <div className="container">
+                <div className="section-header">
+                  <div className="section-title">
+                    <h2>🚀 Upcoming Events</h2>
+                    <p>Don't miss out on these exciting future events</p>
+                  </div>
+                </div>
+                
+                <div className="events-grid">
+                  {upcoming.length > 0 ? (
+                    upcoming.map((e) => renderCard(e, "upcoming"))
+                  ) : (
+                    <div className="empty-state">
+                      <div className="empty-icon">🔮</div>
+                      <h3>No upcoming events scheduled</h3>
+                      <p>Stay tuned for announcements about future events!</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+      </main>
+
+      {/* Event Details Modal */}
+      {showModal && modalData && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{modalData.title}</h2>
+              <button
+                className="modal-close"
+                onClick={() => setShowModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="modal-info-grid">
+                <div className="modal-info-card">
+                  <div className="info-label">📍 Location</div>
+                  <div className="info-value">{modalData.location}</div>
+                </div>
+                <div className="modal-info-card">
+                  <div className="info-label">📅 Duration</div>
+                  <div className="info-value">
+                    {new Date(modalData.startDate).toLocaleDateString()} - {" "}
+                    {new Date(modalData.endDate).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+
+              <div className="halls-section">
+                <h3 className="halls-title">🏛️ Exhibition Halls</h3>
                 {modalData.halls?.length > 0 ? (
-                  modalData.halls.map((hall) => (
-                    <div
-                      key={hall._id}
-                      className="card mb-3"
-                      style={{ border: "1px solid #e0e0e0", borderRadius: "10px" }}
-                    >
-                      <div
-                        className="card-header bg-white"
-                        style={{ borderBottom: "1px solid #f0f0f0" }}
-                      >
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h6 className="mb-0 fw-semibold text-dark">
-                            {hall.name}
-                          </h6>
-                          <span className="badge bg-info rounded-pill px-3">
-                            {hall.totalBooths} booths
-                          </span>
+                  <div className="halls-list">
+                    {modalData.halls.map((hall) => (
+                      <div key={hall._id} className="hall-card">
+                        <div className="hall-header">
+                          <h4 className="hall-name">{hall.name}</h4>
+                          <span className="booths-count">{hall.totalBooths} booths</span>
+                        </div>
+                        <div className="booths-grid">
+                          {hall.booths.length > 0 ? (
+                            hall.booths.map((booth) => (
+                              <div key={booth._id} className="booth-item">
+                                <span className="booth-number">#{booth.boothNumber}</span>
+                                <span className="exhibitor-name">
+                                  {booth.exhibitor?.name || "Available"}
+                                </span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="no-booths">
+                              <span>📭 No booths booked yet</span>
+                            </div>
+                          )}
                         </div>
                       </div>
-                      <div className="card-body">
-                        {hall.booths.length > 0 ? (
-                          <div className="row g-2">
-                            {hall.booths.map((booth) => (
-                              <div key={booth._id} className="col-md-6">
-                                <div
-                                  className="p-3 rounded-3"
-                                  style={{
-                                    background:
-                                      "linear-gradient(to right, #ee8425, #f9488b)",
-                                  }}
-                                >
-                                  <div className="d-flex align-items-center">
-                                    <span
-                                      className="badge bg-warning text-dark me-3 px-2 py-1"
-                                      style={{ fontSize: "0.75rem" }}
-                                    >
-                                      #{booth.boothNumber}
-                                    </span>
-                                    <div>
-                                      <small className="text-muted">
-                                        🏢 Exhibitor:
-                                      </small>
-                                      <div
-                                        className="fw-medium text-dark"
-                                        style={{ fontSize: "0.9rem" }}
-                                      >
-                                        {booth.exhibitor?.name || "Not assigned"}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-center py-3 text-muted">
-                            <div style={{ fontSize: "2rem" }}>📭</div>
-                            <small>No booked booths</small>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 ) : (
-                  <div className="text-center py-4 text-muted">
-                    <div style={{ fontSize: "3rem" }}>🏢</div>
-                    <p className="mt-2 mb-0">No halls available</p>
+                  <div className="no-halls">
+                    <div className="empty-icon">🏢</div>
+                    <p>No halls available</p>
                   </div>
                 )}
               </div>
@@ -440,42 +406,53 @@ const Index = () => {
 
       {/* Rating Modal */}
       {ratingModal && ratingEvent && (
-        <div
-          className="modal fade show d-block"
-          style={{ background: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog modal-md">
-            <div className="modal-content p-4 text-center">
-              <h5>Rate {ratingEvent.title}</h5>
-              <div className="my-3">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    style={{
-                      fontSize: "2rem",
-                      cursor: "pointer",
-                      color: star <= rating ? "gold" : "#ccc",
-                    }}
-                    onClick={() => setRating(star)}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
+        <div className="modal-overlay" onClick={() => setRatingModal(false)}>
+          <div className="rating-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="rating-header">
+              <h3>⭐ Rate Your Experience</h3>
+              <p>{ratingEvent.title}</p>
+            </div>
+            
+            <div className="rating-stars">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  className={`star ${star <= rating ? 'active' : ''}`}
+                  onClick={() => setRating(star)}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+            
+            <div className="rating-feedback">
+              {rating === 0 && "Click on stars to rate"}
+              {rating === 1 && "Poor 😞"}
+              {rating === 2 && "Fair 😐"}
+              {rating === 3 && "Good 🙂"}
+              {rating === 4 && "Very Good 😊"}
+              {rating === 5 && "Excellent! 🎉"}
+            </div>
 
-              <textarea
-                className="form-control mb-3"
-                placeholder="Write your feedback..."
-                value={feedbackText}
-                onChange={(e) => setFeedbackText(e.target.value)}
-              ></textarea>
+            <textarea
+              className="feedback-textarea"
+              placeholder="Share your thoughts about this event... (optional)"
+              value={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+              rows="3"
+            />
 
-              <button className="btn btn-primary" onClick={submitRating}>
+            <div className="rating-actions">
+              <button className="btn-submit-rating" onClick={submitRating}>
                 Submit Feedback
               </button>
               <button
-                className="btn btn-secondary ms-2"
-                onClick={() => setRatingModal(false)}
+                className="btn-cancel-rating"
+                onClick={() => {
+                  setRatingModal(false);
+                  setRating(0);
+                  setFeedbackText("");
+                }}
               >
                 Cancel
               </button>
@@ -485,15 +462,35 @@ const Index = () => {
       )}
 
       {/* Footer */}
-      <footer className="footer-section">
-        <div className="container text-center">
-          <p>
-            &copy; 2025 EventSphere. All rights reserved | Designed by Future
-            Waves
-          </p>
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+            <div className="footer-brand">
+              <div className="footer-logo">
+                <div className="logo-icon">🎪</div>
+                <span className="logo-text">EventSphere</span>
+              </div>
+              <p className="footer-description">
+                Discover amazing events and create unforgettable memories with EventSphere
+              </p>
+            </div>
+            
+            <div className="footer-links">
+              <div className="footer-column">
+                <h4>Navigation</h4>
+                <Link to="/">Home</Link>
+                <Link to="/About">About Us</Link>
+                <Link to="/contact">Contact</Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="footer-bottom">
+            <p>&copy; 2025 EventSphere. All rights reserved | Designed with ❤️ by Future Waves</p>
+          </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 
