@@ -152,6 +152,7 @@ body {
   transition: all 0.3s ease;
   outline: none;
   width: 100%;
+  font-family: inherit;
 }
 
 .form-control:focus {
@@ -236,21 +237,43 @@ body {
   text-transform: none;
   letter-spacing: 0.5px;
   margin-top: 8px;
+  font-family: inherit;
 }
 
-.login-btn:hover {
+.login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
   background: linear-gradient(135deg, #5a67d8, #6b46c1);
 }
 
-.login-btn:active {
+.login-btn:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .login-btn i {
   font-size: 16px;
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 /* Footer */
@@ -538,7 +561,56 @@ body {
   margin-top: 4px;
 }
 
+/* Toast Container Customization */
+.toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3) !important;
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3) !important;
+}
+
+.Toastify__toast {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+}
+
 /* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0% { transform: translateX(0px) translateY(0px); }
+  33% { transform: translateX(30px) translateY(-30px); }
+  66% { transform: translateX(-20px) translateY(20px); }
+  100% { transform: translateX(0px) translateY(0px); }
+}
+
 @keyframes backgroundMove {
   0% { transform: translateX(0) translateY(0); }
   25% { transform: translateX(-10px) translateY(-10px); }
@@ -594,63 +666,9 @@ body {
   50% { transform: translateY(-25px) rotate(225deg); }
 }
 
-/* Toast Container Customization */
-.Toastify__toast-container {
-  z-index: 9999;
-}
-
-.Toastify__toast--success {
-  background: linear-gradient(135deg, #10b981, #059669);
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-}
-
-.Toastify__toast--error {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-}
-
-.Toastify__toast {
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-}
-
-/* Animations */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes float {
-  0% { transform: translateX(0px) translateY(0px); }
-  33% { transform: translateX(30px) translateY(-30px); }
-  66% { transform: translateX(-20px) translateY(20px); }
-  100% { transform: translateX(0px) translateY(0px); }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Responsive Design */
@@ -718,31 +736,62 @@ body {
   .login-form {
     gap: 20px;
   }
+
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .brand-icon i {
+    font-size: 18px;
+  }
 }
 
-/* Focus and hover states for better accessibility */
-.form-control:hover {
-  border-color: #d1d5db;
+@media (max-width: 360px) {
+  .login-wrapper {
+    padding: 10px;
+  }
+
+  .login-form-section {
+    padding: 25px 20px;
+  }
+
+  .login-title {
+    font-size: 22px;
+  }
+
+  .login-subtitle {
+    font-size: 14px;
+  }
+
+  .form-control {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .password-toggle {
+    right: 10px;
+    padding: 8px;
+  }
+
+  .login-btn {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .floating-card {
+    padding: 12px 16px;
+    font-size: 12px;
+  }
 }
 
+/* Focus states for better accessibility */
 .form-group:focus-within .form-label {
   color: #667eea;
 }
 
 .form-group:focus-within .form-label i {
   color: #5a67d8;
-}
-
-/* Loading state for login button */
-.login-btn:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.login-btn:disabled:hover {
-  transform: none;
-  box-shadow: none;
 }
 
 /* High contrast mode support */
@@ -762,5 +811,52 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .brand-icon {
+    animation: none;
+  }
+
+  .login-container {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .login-container {
+    background: rgba(31, 41, 55, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .login-title {
+    color: #f9fafb;
+  }
+
+  .login-subtitle {
+    color: #d1d5db;
+  }
+
+  .form-label {
+    color: #e5e7eb;
+  }
+
+  .form-control {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+
+  .form-control:focus {
+    background: #4b5563;
+    border-color: #667eea;
+  }
+
+  .form-control::placeholder {
+    color: #9ca3af;
+  }
+
+  .login-footer p {
+    color: #d1d5db;
   }
 }
