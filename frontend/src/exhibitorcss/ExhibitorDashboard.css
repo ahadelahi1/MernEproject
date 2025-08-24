@@ -7,7 +7,7 @@
 }
 
 .exhibitor-main {
-  margin-left: 260px;
+  margin-left: 260px; /* Sidebar width + padding */
   min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
   position: relative;
@@ -16,25 +16,25 @@
 }
 
 /* ============================= */
-/* LOADING STATE - COMPACT */
+/* LOADING STATE */
 /* ============================= */
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 60vh;
+  height: 80vh;
   color: #64748b;
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #e2e8f0;
-  border-top: 3px solid #ffc107;
+  width: 60px;
+  height: 60px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #ffc107;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 16px;
+  animation: spin 1.2s linear infinite;
+  margin-bottom: 24px;
 }
 
 @keyframes spin {
@@ -42,8 +42,14 @@
   100% { transform: rotate(360deg); }
 }
 
+.loading-container p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
 /* ============================= */
-/* COMPACT HEADER */
+/* HEADER */
 /* ============================= */
 .dashboard-header {
   background: rgba(255, 255, 255, 0.9);
@@ -52,7 +58,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  padding: 1rem 1.5rem;
+  padding: 1rem 2rem;
 }
 
 .header-content {
@@ -65,12 +71,12 @@
 .header-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .title-accent {
   width: 4px;
-  height: 28px;
+  height: 24px;
   background: linear-gradient(to bottom, #ffc107, #ffb300);
   border-radius: 2px;
 }
@@ -78,50 +84,44 @@
 .header-title h1 {
   font-size: 1.5rem;
   font-weight: 700;
-  margin: 0 0 4px 0;
+  margin: 0;
   background: linear-gradient(to right, #1e293b, #475569);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.header-title p {
-  color: #64748b;
-  font-size: 0.875rem;
-  margin: 0;
-  font-weight: 500;
-}
-
 .header-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   align-items: center;
 }
 
-/* Compact Buttons */
+/* Buttons */
 .btn-refresh,
 .btn-logout {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
 
 .btn-refresh {
   background: linear-gradient(to right, #3b82f6, #2563eb);
   color: white;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
 }
 
 .btn-refresh:hover {
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
 }
 
 .btn-refresh:disabled {
@@ -133,42 +133,73 @@
 .btn-logout {
   background: linear-gradient(to right, #ef4444, #dc2626);
   color: white;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
 }
 
 .btn-logout:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
 }
 
 .btn-icon {
-  font-size: 14px;
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+  font-size: 16px;
+}
+
+.btn-logout:hover .btn-icon {
+  transform: rotate(12deg);
 }
 
 /* ============================= */
-/* MAIN CONTENT - COMPACT */
+/* MAIN CONTENT */
 /* ============================= */
 .dashboard-main {
-  padding: 1.5rem;
+  padding: 2rem;
   max-width: 100%;
 }
 
+/* Welcome Section */
+.welcome-section {
+  background: linear-gradient(to right, #ffc107, #ffb300);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  color: white;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.welcome-section p {
+  font-size: 1.125rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
 /* ============================= */
-/* COMPACT STATS GRID */
+/* STATS GRID - BETTER ALIGNMENT */
 /* ============================= */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: stretch;
 }
 
-/* Compact Stat Cards */
+/* Stat Cards */
 .stat-card {
   background: white;
-  border-radius: 12px;
-  padding: 1.25rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid #f1f5f9;
   transition: all 0.3s ease;
   position: relative;
@@ -181,13 +212,14 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 4px;
   background: var(--accent-color);
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+  border-color: #e2e8f0;
 }
 
 .stat-card.stat-card-blue {
@@ -206,15 +238,19 @@
   --accent-color: linear-gradient(to right, #8b5cf6, #7c3aed);
 }
 
+.stat-card.stat-card-red {
+  --accent-color: linear-gradient(to right, #ef4444, #dc2626);
+}
+
 .stat-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.75rem;
-  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
   transition: transform 0.3s ease;
 }
 
@@ -234,12 +270,16 @@
   background: rgba(139, 92, 246, 0.1);
 }
 
+.stat-card-red .stat-icon {
+  background: rgba(239, 68, 68, 0.1);
+}
+
 .stat-card:hover .stat-icon {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .stat-content h3 {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #64748b;
   margin: 0 0 0.5rem 0;
@@ -248,7 +288,7 @@
 }
 
 .stat-value {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 800;
   color: #1e293b;
   margin: 0;
@@ -257,36 +297,37 @@
 
 .status-badge {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.875rem;
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
 /* ============================= */
-/* COMPACT ACTIVITY GRID */
+/* ACTIVITY GRID - BETTER LAYOUT */
 /* ============================= */
 .activity-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
 .activity-card {
   background: white;
-  border-radius: 12px;
-  padding: 1.25rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid #f1f5f9;
   transition: all 0.3s ease;
+  max-width: 100%;
 }
 
 .activity-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .activity-card.full-width {
@@ -296,16 +337,16 @@
 .activity-card h3 {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 1rem;
+  gap: 0.75rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 1rem 0;
+  margin: 0 0 1.5rem 0;
 }
 
 .card-accent {
-  width: 3px;
-  height: 18px;
+  width: 4px;
+  height: 24px;
   border-radius: 2px;
 }
 
@@ -320,22 +361,21 @@
 .activity-content {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .activity-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
+  padding: 1rem;
+  border-radius: 12px;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .activity-item:hover {
-  transform: translateX(2px);
+  transform: translateX(4px);
 }
 
 .activity-item.green {
@@ -365,21 +405,21 @@
 .booking-info strong {
   display: block;
   margin-bottom: 2px;
+  font-size: 1rem;
 }
 
 .booking-info small {
   color: inherit;
   opacity: 0.8;
+  font-size: 0.875rem;
 }
 
 .activity-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.7rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.875rem;
   color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
 }
 
 .activity-badge.green {
@@ -398,43 +438,44 @@
   background: linear-gradient(to right, #3b82f6, #2563eb);
 }
 
-/* Empty State - Compact */
+/* Empty State */
 .empty-state {
   text-align: center;
-  padding: 1.5rem 1rem;
+  padding: 2rem 1rem;
   color: #64748b;
 }
 
 .empty-icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
+  font-size: 3rem;
+  margin-bottom: 1rem;
   opacity: 0.6;
 }
 
 .empty-state p {
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
 }
 
 .cta-btn {
   background: linear-gradient(to right, #3b82f6, #2563eb);
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
 
 .cta-btn:hover {
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
 }
 
 /* ============================= */
-/* RESPONSIVE DESIGN - IMPROVED */
+/* RESPONSIVE DESIGN */
 /* ============================= */
 @media (max-width: 1024px) {
   .exhibitor-main {
@@ -443,24 +484,24 @@
   }
 
   .dashboard-main {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
   .activity-grid {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
     align-items: stretch;
   }
 
@@ -469,15 +510,28 @@
   }
 
   .dashboard-header {
-    padding: 0.75rem 1rem;
+    padding: 1rem;
   }
 
   .dashboard-main {
-    padding: 0.75rem;
+    padding: 1rem;
+  }
+
+  .welcome-section {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .welcome-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .welcome-section p {
+    font-size: 1rem;
   }
 
   .header-title h1 {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
 
   .stats-grid {
@@ -485,80 +539,75 @@
   }
 
   .stat-card {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .activity-card {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 }
 
 @media (max-width: 640px) {
   .header-title {
-    gap: 8px;
+    gap: 0.75rem;
   }
 
   .title-accent {
-    height: 24px;
+    height: 28px;
   }
 
   .header-title h1 {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
 
   .btn-refresh,
   .btn-logout {
-    padding: 6px 12px;
-    font-size: 0.75rem;
-  }
-
-  .stat-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 1.125rem;
-  }
-
-  .stat-value {
-    font-size: 1.5rem;
-  }
-
-  .activity-item {
-    padding: 0.5rem;
+    padding: 0.625rem 1rem;
     font-size: 0.8rem;
   }
 
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .activity-content {
+    gap: 0.75rem;
+  }
+
+  .activity-item {
+    padding: 0.75rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
   .activity-badge {
-    font-size: 0.65rem;
-    padding: 3px 8px;
+    align-self: center;
   }
 }
 
 @media (max-width: 480px) {
   .dashboard-main {
-    padding: 0.5rem;
+    padding: 0.75rem;
   }
 
   .stats-grid {
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 
   .activity-grid {
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 
   .stat-card,
   .activity-card {
-    padding: 0.75rem;
-  }
-
-  .activity-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .activity-badge {
-    align-self: flex-end;
+    padding: 1rem;
   }
 }
 

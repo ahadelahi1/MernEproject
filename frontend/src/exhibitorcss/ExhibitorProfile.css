@@ -1,4 +1,4 @@
- ExhibitorProfile.css
+/* ExhibitorProfile.css */
 
 * {
   box-sizing: border-box;
@@ -12,25 +12,25 @@
 .exhibitor-page {
   display: flex;
   min-height: 100vh;
-  background-color: #e6f4f1; /* same soft greenish bg */
+  background-color: #f0f4f8; /* Same as login theme */
 }
 
-/* Sidebar */
+/* Sidebar - Updated to match login theme */
 .exhibitor-sidebar {
   width: 260px;
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
-  background-color: #007a5f; /* dark green */
+  background-color: #004aad; /* Blue theme from login */
   color: white;
   padding: 30px 20px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #00563f #007a5f;
+  scrollbar-color: #00337a #004aad; /* Match login scrollbar */
 }
 
-/* Brand name styling if used */
+/* Brand name styling */
 .exhibitor-sidebar .brand-name {
   font-size: 1.8rem;
   font-weight: 700;
@@ -47,21 +47,18 @@
   align-items: center;
   padding: 40px 30px;
   min-height: 100vh;
-  background-color: #e6f4f1;
+  background-color: #f0f4f8; /* Match login background */
   overflow-y: auto;
 }
 
-/* Profile card (like form-card) */
+/* Profile card - Updated to match login form-card */
 .profile-card {
   background: #fff;
-  padding: 25px 30px;      /* padding kam kiya thoda */
+  padding: 40px 50px; /* Match login form padding */
   border-radius: 14px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 550px;        /* thoda chhota width */
-  max-height: 600px;       /* max height limit lagayi */
-  overflow-y: auto;        /* agar content zyada hua to scroll */
-  box-sizing: border-box;
+  max-width: 500px; /* Slightly larger for profile fields */
   text-align: center;
   transition: box-shadow 0.3s ease;
 }
@@ -70,86 +67,162 @@
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
-
-/* Title */
+/* Title - Updated to match login theme */
 .profile-title {
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 5px;
-  color: #007a5f;
+  margin-bottom: 35px; /* Match login form title spacing */
+  color: #004aad; /* Blue theme color */
   letter-spacing: 1.1px;
 }
 
 /* Labels */
 form label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 600;
   color: #333;
-  margin-top: 20px;
+  margin-top: 18px;
+  text-align: left; /* Align labels to left for better UX */
+  font-size: 0.95rem;
 }
 
-/* Inputs */
+/* First label without top margin */
+form label:first-of-type {
+  margin-top: 0;
+}
+
+/* Inputs - Updated to match login theme */
 form input {
   width: 100%;
   padding: 14px 18px;
-  margin-bottom: 3px;
-  border: 1px solid #c4d8d2;
+  margin-bottom: 15px; /* Adjusted spacing */
+  border: 2px solid #d0d7e3; /* Match login border color */
   border-radius: 10px;
   font-size: 1rem;
-  background: #fafafa;
+  background: #fafafa; /* Match login background */
   outline: none;
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
 form input:focus {
-  border-color: #007a5f;
+  border-color: #004aad; /* Blue theme focus */
   background: #fff;
-  box-shadow: 0 0 8px rgba(0, 122, 95, 0.35);
+  box-shadow: 0 0 8px rgba(0, 74, 173, 0.35); /* Match login focus shadow */
 }
 
-/* Disabled inputs */
+/* Disabled inputs - Enhanced styling */
 form input[disabled] {
-  background: #f0f5f2;
-  color: #999;
+  background: #f5f7fa;
+  color: #6c757d;
   cursor: not-allowed;
+  border-color: #e1e5e9;
 }
 
-/* Buttons */
-.btn-group {
-  margin-top: 5px;
+/* Status input special styling */
+form input[disabled][value*="Active"],
+form input[disabled][value*="Inactive"] {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  border-color: #28a745;
+}
+
+/* Button container */
+.btn-group,
+div[style*="marginTop"] {
+  margin-top: 25px;
   display: flex;
   justify-content: center;
   gap: 20px;
 }
 
-.btn {
-  padding: 15px 40px;
+/* Buttons - Updated to match login theme */
+button[type="button"] {
+  padding: 15px 35px;
   border-radius: 10px;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   cursor: pointer;
   border: none;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  letter-spacing: 0.9px;
+  min-width: 140px;
 }
 
-.edit-btn {
-  background-color: #007a5f;
-  color: rgb(80, 180, 160);
-}
-
-.edit-btn:hover {
-  background-color: #00563f;
-}
-
-.save-btn {
-  background-color: #28a745;
+/* Edit Profile Button */
+button[type="button"]:not([onclick*="handleSave"]) {
+  background: #004aad; /* Blue theme */
   color: white;
 }
 
-.save-btn:hover {
-  background-color: #218838;
+button[type="button"]:not([onclick*="handleSave"]):hover {
+  background: #00337a; /* Darker blue on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 74, 173, 0.3);
+}
+
+/* Save Button */
+button[type="button"][onclick*="handleSave"] {
+  background: #28a745; /* Green for save action */
+  color: white;
+}
+
+button[type="button"][onclick*="handleSave"]:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Button disabled state */
+button[type="button"]:disabled {
+  background: #a1a8c6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Toast Container Styling */
+.Toastify__toast--error {
+  background-color: #d9534f !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.Toastify__toast--success {
+  background-color: #28a745 !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Enhanced form styling */
+form {
+  text-align: left; /* Better alignment for form fields */
+}
+
+/* Password field placeholder enhancement */
+form input[type="password"]::placeholder {
+  font-style: italic;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Profile card animation */
+.profile-card {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive */
@@ -166,6 +239,34 @@ form input[disabled] {
   }
 
   .profile-card {
-    padding: 30px 25px;
+    padding: 30px 25px; /* Reduced padding for mobile */
+    max-width: 100%;
+  }
+
+  .profile-title {
+    font-size: 1.7rem; /* Smaller title on mobile */
+  }
+
+  button[type="button"] {
+    padding: 12px 25px;
+    font-size: 1rem;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 25px 20px;
+  }
+
+  .btn-group,
+  div[style*="marginTop"] {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  button[type="button"] {
+    width: 100%;
+    min-width: unset;
   }
 }

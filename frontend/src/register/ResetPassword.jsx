@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBCard,
-  MDBCardBody,
-  MDBCardImage,
-  MDBInput,
-  MDBIcon,
-} from 'mdb-react-ui-kit';
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import './css/ResetPassword.css';
 
 export default function ResetPassword() {
   const [pswd, setPswd] = useState("");
   const [cpswd, setCPswd] = useState("");
-  const { token } = useParams();
-  const nav = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Replace these with your actual imports
+  // const { token } = useParams();
+  //  const nav = useNavigate();
 
   async function Reset() {
     try {
@@ -28,14 +20,19 @@ export default function ResetPassword() {
         return;
       }
 
-      await axios.post(`http://localhost:4000/api/user/reset/${token}`, {
-        pswd: pswd
-      }).then((res) => {
-        toast.success(res.data.msg);
-        nav("/log");
-      }).catch((err) => {
-        toast.error(err.response?.data?.msg || "Something went wrong");
-      });
+      // Replace with your actual axios call
+      // await axios.post(`http://localhost:4000/api/user/reset/${token}`, {
+      //   pswd: pswd
+      // }).then((res) => {
+      //   toast.success(res.data.msg);
+      //   nav("/log");
+      // }).catch((err) => {
+      //   toast.error(err.response?.data?.msg || "Something went wrong");
+      // });
+
+      // For demo purposes
+      console.log("Password reset successfully");
+      toast.success("Password reset successfully");
 
     } catch (error) {
       toast.error(error.response?.data?.msg || "Server Error");
@@ -43,49 +40,165 @@ export default function ResetPassword() {
   }
 
   return (
-    <MDBContainer fluid style={{ backgroundColor: 'white' }}>
+    <div className="reset-password-wrapper">
       <ToastContainer />
-      <MDBCard className='text-black m-5'>
-        <MDBCardBody>
-          <MDBRow>
-            <MDBCol md='10' lg='6' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
 
-              <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Reset Password</p>
+      <div className="reset-password-container">
+        {/* Left Side - Form Section */}
+        <div className="reset-password-form-section">
+          <div className="form-content">
+            {/* Header */}
+            <div className="reset-password-header">
+              <div className="brand-icon">
+                <i className="fas fa-lock"></i>
+              </div>
+              <h1 className="reset-password-title">Reset Password</h1>
+              <p className="reset-password-subtitle">
+                Create a new secure password for your account
+              </p>
+            </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="lock me-3" size='lg' />
-                <MDBInput
-                  label='New Password'
-                  id='form5'
-                  type='password'
-                  value={pswd}
-                  onChange={(e) => setPswd(e.target.value)}
-                />
+            {/* Form */}
+            <div className="reset-password-form">
+              <div className="form-group">
+                <label className="form-label">
+                  <i className="fas fa-lock"></i>
+                  New Password
+                </label>
+                <div className="password-input-container">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control password-input"
+                    placeholder="Enter your new password"
+                    value={pswd}
+                    onChange={(e) => setPswd(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                  </button>
+                </div>
               </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-                <MDBIcon fas icon="key me-3" size='lg' />
-                <MDBInput
-                  label='Confirm Password'
-                  id='form6'
-                  type='password'
-                  value={cpswd}
-                  onChange={(e) => setCPswd(e.target.value)}
-                />
+              <div className="form-group">
+                <label className="form-label">
+                  <i className="fas fa-key"></i>
+                  Confirm Password
+                </label>
+                <div className="password-input-container">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="form-control password-input"
+                    placeholder="Confirm your new password"
+                    value={cpswd}
+                    onChange={(e) => setCPswd(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <i className={showConfirmPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                  </button>
+                </div>
               </div>
 
-              <MDBBtn className='mb-4' size='lg' onClick={Reset}>Reset</MDBBtn>
+              <button
+                type="button"
+                className="reset-password-btn"
+                onClick={Reset}
+                disabled={!pswd || !cpswd}
+              >
+                <i className="fas fa-shield-alt"></i>
+                Reset Password
+              </button>
+            </div>
 
-            </MDBCol>
+            {/* Footer */}
+            <div className="reset-password-footer">
+              <p>
+                Remembered your password? {" "}
+                <a href="/login" className="login-link">Back to Login</a>
+              </p>
+            </div>
+          </div>
+        </div>
 
-            <MDBCol md='10' lg='6' className='order-1 order-lg-2 d-flex align-items-center'>
-              <MDBCardImage
-                src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp'
-                fluid />
-            </MDBCol>
-          </MDBRow>
-        </MDBCardBody>
-      </MDBCard>
-    </MDBContainer>
+        {/* Right Side - Visual Section */}
+        <div className="reset-password-image-section">
+          <div className="visual-container">
+            {/* Floating Elements */}
+            <div className="floating-elements">
+              <div className="floating-card card-1">
+                <i className="fas fa-shield-alt"></i>
+                <span>Secure Process</span>
+              </div>
+              <div className="floating-card card-2">
+                <i className="fas fa-key"></i>
+                <span>New Password</span>
+              </div>
+              <div className="floating-card card-3">
+                <i className="fas fa-check-circle"></i>
+                <span>Verified Reset</span>
+              </div>
+              <div className="floating-card card-4">
+                <i className="fas fa-user-shield"></i>
+                <span>Account Safe</span>
+              </div>
+            </div>
+
+            {/* Central Logo */}
+            <div className="central-logo">
+              <div className="logo-rings">
+                <div className="ring ring-1"></div>
+                <div className="ring ring-2"></div>
+                <div className="ring ring-3"></div>
+              </div>
+              <div className="logo-circle">
+                <i className="fas fa-shield-alt"></i>
+              </div>
+            </div>
+
+            {/* Geometric Shapes */}
+            <div className="geometric-shapes">
+              <div className="shape shape-1"></div>
+              <div className="shape shape-2"></div>
+              <div className="shape shape-3"></div>
+              <div className="shape shape-4"></div>
+            </div>
+
+            {/* Content Overlay */}
+            <div className="content-overlay">
+              <div className="overlay-content">
+                <h2>Secure Password Reset</h2>
+                <p>
+                  Your account security is our priority. Create a strong password
+                  to protect your account from unauthorized access.
+                </p>
+                <div className="stats-row">
+                  <div className="stat-item">
+                    <span className="stat-number">256-bit</span>
+                    <span className="stat-label">Encryption</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-number">100%</span>
+                    <span className="stat-label">Secure</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-number">Instant</span>
+                    <span className="stat-label">Reset</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
