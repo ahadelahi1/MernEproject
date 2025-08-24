@@ -30,6 +30,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ExhibitorList from './pages/ExhibitorList';
 import Index from './WebPages/Index';
 import ParticipationList from './pages/ParticipationList';
+import AboutUs from './WebPages/About';
 
 
 
@@ -51,6 +52,7 @@ function AppContent() {
   // Pages jahan sidebar nahi chahiye
   const noSidebarRoutes = [
     '/',
+    '/About',
     '/register',
     '/login',
     '/fp',
@@ -139,6 +141,7 @@ function AppContent() {
 
             {/* Web Main */}
             <Route path="/" element={<Index />} />
+            <Route path="/About" element={<AboutUs/>} />
 
           </Routes>
         </div>

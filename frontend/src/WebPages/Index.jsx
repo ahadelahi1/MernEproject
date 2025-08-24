@@ -1,3 +1,4 @@
+// src/WebPages/Index.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./css/bootstrap.min.css";
@@ -7,8 +8,7 @@ import "./css/magnific-popup.css";
 import "./css/slicknav.min.css";
 import "./css/style.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [ongoing, setOngoing] = useState([]);
@@ -18,37 +18,70 @@ const Index = () => {
   const [modalData, setModalData] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // ⭐ Feedback states
+  // auth state (navbar)
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("UserInfo")) || null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Feedback states
   const [ratingModal, setRatingModal] = useState(false);
   const [ratingEvent, setRatingEvent] = useState(null);
   const [rating, setRating] = useState(0);
   const [feedbackText, setFeedbackText] = useState("");
 
-  // TODO: login user ka ID yahan dalna hoga (localStorage ya context se le lo)
-  const userId = "66c7a1f5d6a9a0abcdef1234"; 
+  const nav = useNavigate();
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchEventsAndPopular = async () => {
       try {
         const res = await axios.get("http://localhost:4000/api/expos/all");
         const events = res.data;
         const now = new Date();
 
-        setOngoing(events.filter((e) =>
-          new Date(e.startDate) <= now && new Date(e.endDate) >= now
-        ));
-        setUpcoming(events.filter((e) => new Date(e.startDate) > now));
-        setPopular(events.filter((e) => e.theme?.toLowerCase() === "popular"));
+        const ongoingEvts = events.filter(
+          (e) => new Date(e.startDate) <= now && new Date(e.endDate) >= now
+        );
+        const upcomingEvts = events.filter((e) => new Date(e.startDate) > now);
+
+        setOngoing(ongoingEvts);
+        setUpcoming(upcomingEvts);
+
+        // popular = avg rating >= 4
+        try {
+          const fb = await axios.get("http://localhost:4000/api/feedback/all");
+          const list = fb.data || [];
+          const totals = {}; // {eventId: {sum, count}}
+          list.forEach((f) => {
+            const id = f.event?._id || f.event; // populated or raw id
+            if (!id) return;
+            if (!totals[id]) totals[id] = { sum: 0, count: 0 };
+            totals[id].sum += Number(f.rating || 0);
+            totals[id].count += 1;
+          });
+          const avg = Object.fromEntries(
+            Object.entries(totals).map(([k, v]) => [k, v.sum / v.count])
+          );
+          const popularEvts = events.filter((e) => (avg[e._id] || 0) >= 4);
+          setPopular(popularEvts);
+        } catch {
+          setPopular([]);
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchEvents();
+    fetchEventsAndPopular();
   }, []);
 
   const handleViewMore = async (eventId) => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/expos/${eventId}/details`);
+      const res = await axios.get(
+        `http://localhost:4000/api/expos/${eventId}/details`
+      );
       setModalData(res.data);
       setSelectedEvent(eventId);
       setShowModal(true);
@@ -58,33 +91,66 @@ const Index = () => {
   };
 
   const handleVisited = (event) => {
+    // login required
+    if (!currentUser?.id) {
+      alert("Please login to give feedback.");
+      nav("/login");
+      return;
+    }
     setRatingEvent(event);
     setRatingModal(true);
   };
 
- // ⭐ Submit feedback to backend
-const submitRating = async () => {
-  try {
-    const payload = {
-      user: userId,             // user ki _id
-      stars: rating,            // backend me "stars" field h
-      comment: feedbackText || "No comment",
-      event: ratingEvent._id    // event ki _id bhejna zaroori h
-    };
+  const submitRating = async () => {
+    if (!currentUser?.id) {
+      alert("Please login first.");
+      nav("/login");
+      return;
+    }
+    if (!ratingEvent?._id || !rating) {
+      alert("Please select stars before submitting.");
+      return;
+    }
 
-    const res = await axios.post("http://localhost:4000/api/feedback/add", payload);
+    try {
+      const payload = {
+        rating, // correct key
+        comment: feedbackText || "No comment",
+        event: ratingEvent._id,
+      };
 
-    alert(res.data.message || "Feedback submitted successfully");
+      const token =
+        localStorage.getItem("AuthToken") ||
+        currentUser.token ||
+        currentUser.jwt ||
+        null;
 
-    setRatingModal(false);
-    setRating(0);
-    setFeedbackText("");
-  } catch (err) {
-    console.error("Error submitting feedback:", err);
-    alert("Failed to submit feedback");
-  }
-};
+      if (!token) {
+        alert("Auth token missing, please login again.");
+        nav("/login");
+        return;
+      }
 
+      await axios.post("http://localhost:4000/api/feedback", payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      alert("Feedback submitted successfully ✅");
+      setRatingModal(false);
+      setRating(0);
+      setFeedbackText("");
+    } catch (err) {
+      console.error("Error submitting feedback:", err?.response?.data || err);
+      alert(err?.response?.data?.message || "Failed to submit feedback");
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("UserInfo");
+    localStorage.removeItem("AuthToken");
+    setCurrentUser(null);
+    nav("/login");
+  };
 
   const renderCard = (event, type) => (
     <div className="col-lg-4 col-md-6 mb-4" key={event._id}>
@@ -103,9 +169,9 @@ const submitRating = async () => {
           </p>
           {type === "ongoing" && (
             <div className="mb-2">
-              <input 
-                type="checkbox" 
-                id={`visited-${event._id}`} 
+              <input
+                type="checkbox"
+                id={`visited-${event._id}`}
                 onChange={() => handleVisited(event)}
               />
               <label htmlFor={`visited-${event._id}`} className="ms-2">
@@ -127,31 +193,61 @@ const submitRating = async () => {
   return (
     <>
       <header className="header-section">
-  <div className="container header-container">
-    <div className="logo">
-      <Link to="/">
-        <img src="logo.png" alt="Logo" />
-      </Link>
-    </div>
-    <div className="nav-menu">
-      <nav className="mainmenu mobile-menu">
-        <ul>
-          <li className="active"><Link to="/">Home</Link></li>
-          <li><Link to="/about">About</Link></li>
-          <li><Link to="/contact">Contacts</Link></li>
-        </ul>
-      </nav>
-    </div>
-    {/* 👇 Login / Signup links */}
-    <div className="auth-links">
-      <Link to="/login" className="auth-link">Login</Link>
-      <Link to="/register" className="auth-link">Signup</Link>
-    </div>
-  </div>
-</header>
+        <div className="container header-container">
+          <div className="logo">
+            <Link to="/">
+              <img src="logo.png" alt="Logo" />
+            </Link>
+          </div>
+          <div className="nav-menu">
+            <nav className="mainmenu mobile-menu">
+              <ul>
+                <li className="active">
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/About">About</Link>
+                </li>
+                <li>
+                  <Link to="/contact">Contacts</Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
 
+          <div className="auth-links">
+            {currentUser ? (
+              <>
+                <span className="auth-link" style={{ cursor: "default" }}>
+                  {currentUser.name || "User"}
+                </span>
+                <button
+                  className="auth-link"
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                  }}
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="auth-link">
+                  Login
+                </Link>
+                <Link to="/register" className="auth-link">
+                  Signup
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section
         className="hero-section set-bg"
         style={{ backgroundImage: "url('hero.jpg')" }}
@@ -177,44 +273,73 @@ const submitRating = async () => {
         </div>
       </section>
 
-      {/* Ongoing Events */}
+      {/* Ongoing */}
       <section className="spad">
         <div className="container">
           <h2 className="text-center mb-5">Ongoing Events</h2>
           <div className="row">
-            {ongoing.length > 0 ? ongoing.map((e) => renderCard(e, "ongoing")) : <p>No ongoing events</p>}
+            {ongoing.length > 0 ? (
+              ongoing.map((e) => renderCard(e, "ongoing"))
+            ) : (
+              <p>No ongoing events</p>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Upcoming Events */}
+      {/* Upcoming */}
       <section className="spad bg-light">
         <div className="container">
           <h2 className="text-center mb-5">Upcoming Events</h2>
           <div className="row">
-            {upcoming.length > 0 ? upcoming.map((e) => renderCard(e, "upcoming")) : <p>No upcoming events</p>}
+            {upcoming.length > 0 ? (
+              upcoming.map((e) => renderCard(e, "upcoming"))
+            ) : (
+              <p>No upcoming events</p>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Popular Events */}
+      {/* Popular */}
       <section className="spad">
         <div className="container">
           <h2 className="text-center mb-5">Popular Events</h2>
           <div className="row">
-            {popular.length > 0 ? popular.map((e) => renderCard(e, "popular")) : <p>No popular events</p>}
+            {popular.length > 0 ? (
+              popular.map((e) => renderCard(e, "popular"))
+            ) : (
+              <p>No popular events</p>
+            )}
           </div>
         </div>
       </section>
 
       {/* Modal for Expo Details */}
       {showModal && modalData && (
-        <div className="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div
+          className="modal fade show d-block"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog modal-lg">
-            <div className="modal-content" style={{ borderRadius: '15px', border: 'none' }}>
-              <div className="modal-header text-white" style={{ background: 'linear-gradient(to right, #ee8425, #f9488b)', borderRadius: '15px 15px 0 0', border: 'none' }}>
+            <div
+              className="modal-content"
+              style={{ borderRadius: "15px", border: "none" }}
+            >
+              <div
+                className="modal-header text-white"
+                style={{
+                  background: "linear-gradient(to right, #ee8425, #f9488b)",
+                  borderRadius: "15px 15px 0 0",
+                  border: "none",
+                }}
+              >
                 <h5 className="modal-title fw-bold">{modalData.title}</h5>
-                <button type="button" className="btn-close btn-close-white" onClick={() => setShowModal(false)}></button>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={() => setShowModal(false)}
+                ></button>
               </div>
               <div className="modal-body p-4">
                 <div className="row mb-4">
@@ -228,7 +353,8 @@ const submitRating = async () => {
                     <div className="p-3 bg-light rounded-3 mb-3">
                       <strong className="text-success">📅 Dates:</strong>
                       <div className="mt-1">
-                        {new Date(modalData.startDate).toLocaleDateString()} - {new Date(modalData.endDate).toLocaleDateString()}
+                        {new Date(modalData.startDate).toLocaleDateString()} -{" "}
+                        {new Date(modalData.endDate).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
@@ -238,10 +364,19 @@ const submitRating = async () => {
                 <h6 className="fw-bold mb-3 text-dark">🏛️ Exhibition Halls</h6>
                 {modalData.halls?.length > 0 ? (
                   modalData.halls.map((hall) => (
-                    <div key={hall._id} className="card mb-3" style={{ border: '1px solid #e0e0e0', borderRadius: '10px' }}>
-                      <div className="card-header bg-white" style={{ borderBottom: '1px solid #f0f0f0' }}>
+                    <div
+                      key={hall._id}
+                      className="card mb-3"
+                      style={{ border: "1px solid #e0e0e0", borderRadius: "10px" }}
+                    >
+                      <div
+                        className="card-header bg-white"
+                        style={{ borderBottom: "1px solid #f0f0f0" }}
+                      >
                         <div className="d-flex justify-content-between align-items-center">
-                          <h6 className="mb-0 fw-semibold text-dark">{hall.name}</h6>
+                          <h6 className="mb-0 fw-semibold text-dark">
+                            {hall.name}
+                          </h6>
                           <span className="badge bg-info rounded-pill px-3">
                             {hall.totalBooths} booths
                           </span>
@@ -252,15 +387,29 @@ const submitRating = async () => {
                           <div className="row g-2">
                             {hall.booths.map((booth) => (
                               <div key={booth._id} className="col-md-6">
-                                <div className="p-3 rounded-3" style={{ background: 'linear-gradient(to right, #ee8425, #f9488b)' }}>
+                                <div
+                                  className="p-3 rounded-3"
+                                  style={{
+                                    background:
+                                      "linear-gradient(to right, #ee8425, #f9488b)",
+                                  }}
+                                >
                                   <div className="d-flex align-items-center">
-                                    <span className="badge bg-warning text-dark me-3 px-2 py-1" style={{ fontSize: '0.75rem' }}>
+                                    <span
+                                      className="badge bg-warning text-dark me-3 px-2 py-1"
+                                      style={{ fontSize: "0.75rem" }}
+                                    >
                                       #{booth.boothNumber}
                                     </span>
                                     <div>
-                                      <small className="text-muted">🏢 Exhibitor:</small>
-                                      <div className="fw-medium text-dark" style={{ fontSize: '0.9rem' }}>
-                                        {booth.exhibitor?.name || 'Not assigned'}
+                                      <small className="text-muted">
+                                        🏢 Exhibitor:
+                                      </small>
+                                      <div
+                                        className="fw-medium text-dark"
+                                        style={{ fontSize: "0.9rem" }}
+                                      >
+                                        {booth.exhibitor?.name || "Not assigned"}
                                       </div>
                                     </div>
                                   </div>
@@ -270,7 +419,7 @@ const submitRating = async () => {
                           </div>
                         ) : (
                           <div className="text-center py-3 text-muted">
-                            <div style={{ fontSize: '2rem' }}>📭</div>
+                            <div style={{ fontSize: "2rem" }}>📭</div>
                             <small>No booked booths</small>
                           </div>
                         )}
@@ -279,7 +428,7 @@ const submitRating = async () => {
                   ))
                 ) : (
                   <div className="text-center py-4 text-muted">
-                    <div style={{ fontSize: '3rem' }}>🏢</div>
+                    <div style={{ fontSize: "3rem" }}>🏢</div>
                     <p className="mt-2 mb-0">No halls available</p>
                   </div>
                 )}
@@ -289,23 +438,31 @@ const submitRating = async () => {
         </div>
       )}
 
-      {/* ⭐ Rating Modal */}
+      {/* Rating Modal */}
       {ratingModal && ratingEvent && (
-        <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+        <div
+          className="modal fade show d-block"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog modal-md">
             <div className="modal-content p-4 text-center">
               <h5>Rate {ratingEvent.title}</h5>
               <div className="my-3">
-                {[1,2,3,4,5].map((star) => (
-                  <span 
-                    key={star} 
-                    style={{ fontSize: "2rem", cursor: "pointer", color: star <= rating ? "gold" : "#ccc" }}
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    style={{
+                      fontSize: "2rem",
+                      cursor: "pointer",
+                      color: star <= rating ? "gold" : "#ccc",
+                    }}
                     onClick={() => setRating(star)}
-                  >★</span>
+                  >
+                    ★
+                  </span>
                 ))}
               </div>
 
-              {/* Feedback textarea */}
               <textarea
                 className="form-control mb-3"
                 placeholder="Write your feedback..."
@@ -313,8 +470,15 @@ const submitRating = async () => {
                 onChange={(e) => setFeedbackText(e.target.value)}
               ></textarea>
 
-              <button className="btn btn-primary" onClick={submitRating}>Submit Feedback</button>
-              <button className="btn btn-secondary ms-2" onClick={() => setRatingModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={submitRating}>
+                Submit Feedback
+              </button>
+              <button
+                className="btn btn-secondary ms-2"
+                onClick={() => setRatingModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -324,7 +488,8 @@ const submitRating = async () => {
       <footer className="footer-section">
         <div className="container text-center">
           <p>
-            &copy; 2025 EventSphere. All rights reserved | Designed by Future Waves
+            &copy; 2025 EventSphere. All rights reserved | Designed by Future
+            Waves
           </p>
         </div>
       </footer>
