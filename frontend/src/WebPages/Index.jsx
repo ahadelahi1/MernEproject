@@ -145,7 +145,7 @@ const submitRating = async () => {
     {/* 👇 Login / Signup links */}
     <div className="auth-links">
       <Link to="/login" className="auth-link">Login</Link>
-      <Link to="/signup" className="auth-link">Signup</Link>
+      <Link to="/register" className="auth-link">Signup</Link>
     </div>
   </div>
 </header>
