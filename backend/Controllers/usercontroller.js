@@ -68,28 +68,42 @@ let all_func = {
     }
   },
 
- Login: async function (req,res){
-    try {
-      let {email, password} =req.body;
-      let email_check= await User.findOne({email :email})
-      if(!email_check){
-        res.status(404).json({msg : "Email not found"})
-      }
-      let password_check = bcrypt.compareSync(password ,email_check.password)
-      if(!password_check){
-        res.status(404).json({msg : "password is invalid"})
-      }
-      let mera_token =jwt.sign({id: email_check._id},"niha" ,{expiresIn :"5h"})
-      res.status(200).json({mera_token,
-        user :{id :email_check._id , name :email_check.name ,email: email_check.email},
-        msg : "login Successfully"
-      })
-    } catch (error) {
-      res.status(504).json({msg : error.message})
-      console.log(error.message)
-      
+Login: async function (req,res){
+  try {
+    let {email, password} = req.body;
+    let email_check= await User.findOne({email :email})
+    if(!email_check){
+      return res.status(404).json({msg : "Email not found"})
     }
-  },
+
+    let password_check = bcrypt.compareSync(password ,email_check.password)
+    if(!password_check){
+      return res.status(404).json({msg : "password is invalid"})
+    }
+
+    // ✅ Token banate waqt same secret use karo jo .env me hai
+    let token = jwt.sign(
+      { id: email_check._id },
+      process.env.JWT_SECRET,   // yeh env variable rakho
+      { expiresIn: "5h" }
+    );
+
+    res.status(200).json({
+      token,
+      user : {
+        id : email_check._id,
+        name : email_check.name,
+        email: email_check.email
+      },
+      msg : "Login Successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({msg : error.message})
+    console.log(error.message)
+  }
+},
+
   forget_password : async function(req,res){
     try {
       let {e} = req.body
