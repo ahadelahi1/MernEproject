@@ -6,7 +6,7 @@ import "../exhibitorcss/ExhibitorDashboard.css";
 const ExhibitorDashboard = () => {
   const [dashboardData, setDashboardData] = useState({
     boothsBooked: 0,
-    upcomingEvents: 0,
+    upcomingEvents: [],   // ✅ always array
     status: "Inactive",
   });
   const [bookings, setBookings] = useState([]);
@@ -23,11 +23,15 @@ const ExhibitorDashboard = () => {
         setExhibitorInfo(exhibitor);
 
         // Dashboard summary API
-        const dashboardRes = await axios.get(`http://localhost:4000/api/exhibitors/${exhibitorId}/dashboard`);
+        const dashboardRes = await axios.get(
+          `http://localhost:4000/api/exhibitors/${exhibitorId}/dashboard`
+        );
         setDashboardData(dashboardRes.data);
 
         // Bookings API
-        const bookingsRes = await axios.get(`http://localhost:4000/api/book/bookBooth/${exhibitorId}`);
+        const bookingsRes = await axios.get(
+          `http://localhost:4000/api/book/bookBooth/${exhibitorId}`
+        );
         setBookings(bookingsRes.data);
       }
     } catch (error) {
@@ -54,18 +58,22 @@ const ExhibitorDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
-      case 'active': return 'linear-gradient(to right, #10b981, #059669)';
-      case 'pending': return 'linear-gradient(to right, #f59e0b, #d97706)';
-      case 'inactive': return 'linear-gradient(to right, #ef4444, #dc2626)';
-      default: return 'linear-gradient(to right, #6b7280, #4b5563)';
+      case "active":
+        return "linear-gradient(to right, #10b981, #059669)";
+      case "pending":
+        return "linear-gradient(to right, #f59e0b, #d97706)";
+      case "inactive":
+        return "linear-gradient(to right, #ef4444, #dc2626)";
+      default:
+        return "linear-gradient(to right, #6b7280, #4b5563)";
     }
   };
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -87,13 +95,13 @@ const ExhibitorDashboard = () => {
     <div className="exhibitor-page">
       <ExhibitorSidebar />
       <main className="exhibitor-main">
-        {/* Compact Header */}
+        {/* Header */}
         <div className="dashboard-header">
           <div className="header-content">
             <div className="header-title">
               <div className="title-accent"></div>
               <div>
-                <h1>Welcome, {exhibitorInfo.companyName || 'Exhibitor'}!</h1>
+                <h1>Welcome, {exhibitorInfo.companyName || "Exhibitor"}!</h1>
                 <p>Exhibition Dashboard</p>
               </div>
             </div>
@@ -103,8 +111,8 @@ const ExhibitorDashboard = () => {
                 onClick={handleRefresh}
                 disabled={refreshing}
               >
-                <span className="btn-icon">{refreshing ? '🔄' : '📊'}</span>
-                {refreshing ? 'Loading...' : 'Refresh'}
+                <span className="btn-icon">{refreshing ? "🔄" : "📊"}</span>
+                {refreshing ? "Loading..." : "Refresh"}
               </button>
               <button className="btn-logout" onClick={handleLogout}>
                 <span className="btn-icon">🚪</span>
@@ -114,9 +122,9 @@ const ExhibitorDashboard = () => {
           </div>
         </div>
 
-        {/* Main Dashboard Content */}
+        {/* Main Dashboard */}
         <div className="dashboard-main">
-          {/* Stats Grid - Compact */}
+          {/* Stats Grid */}
           <div className="stats-grid">
             <div className="stat-card stat-card-blue">
               <div className="stat-icon">🏪</div>
@@ -130,7 +138,10 @@ const ExhibitorDashboard = () => {
               <div className="stat-icon">🎭</div>
               <div className="stat-content">
                 <h3>Events</h3>
-                <div className="stat-value">{dashboardData.upcomingEvents}</div>
+                {/* ✅ safe access */}
+                <div className="stat-value">
+                  {dashboardData.upcomingEvents?.length || 0}
+                </div>
               </div>
             </div>
 
@@ -146,13 +157,11 @@ const ExhibitorDashboard = () => {
                 </div>
               </div>
             </div>
-
-
           </div>
 
-          {/* Activity Grid - Responsive */}
+          {/* Activity Grid */}
           <div className="activity-grid">
-            {/* Recent Bookings Card */}
+            {/* Recent Bookings */}
             <div className="activity-card">
               <h3>
                 <div className="card-accent green"></div>
@@ -170,12 +179,16 @@ const ExhibitorDashboard = () => {
                     {bookings.slice(0, 3).map((booking, index) => (
                       <div key={booking._id} className="activity-item green">
                         <div className="booking-info">
-                          <strong>{booking.boothId?.name || `Booth #${index + 1}`}</strong>
+                          <strong>
+                            {booking.boothId?.name || `Booth #${index + 1}`}
+                          </strong>
                           <br />
                           <small>{booking.eventId?.title || "Event Name"}</small>
                         </div>
                         <div className="activity-badge green">
-                          {formatDate(booking.bookingDate || booking.eventId?.date)}
+                          {formatDate(
+                            booking.bookingDate || booking.eventId?.date
+                          )}
                         </div>
                       </div>
                     ))}
@@ -184,7 +197,30 @@ const ExhibitorDashboard = () => {
               </div>
             </div>
 
-
+            {/* Upcoming Events */}
+            <div className="activity-card">
+              <h3>
+                <div className="card-accent blue"></div>
+                Upcoming Events
+              </h3>
+              <div className="activity-content">
+                {dashboardData.upcomingEvents &&
+                dashboardData.upcomingEvents.length > 0 ? (
+                  <ul className="event-list">
+                    {dashboardData.upcomingEvents.map((event, idx) => (
+                      <li key={idx} className="event-item">
+                        {event}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="empty-state">
+                    <div className="empty-icon">🎭</div>
+                    <p>No upcoming events</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </main>

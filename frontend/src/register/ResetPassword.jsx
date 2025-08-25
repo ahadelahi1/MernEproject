@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import './css/ResetPassword.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 export default function ResetPassword() {
   const [pswd, setPswd] = useState("");
@@ -10,8 +12,8 @@ export default function ResetPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Replace these with your actual imports
-  // const { token } = useParams();
-  //  const nav = useNavigate();
+  const { token } = useParams();
+   const nav = useNavigate();
 
   async function Reset() {
     try {
@@ -21,14 +23,14 @@ export default function ResetPassword() {
       }
 
       // Replace with your actual axios call
-      // await axios.post(`http://localhost:4000/api/user/reset/${token}`, {
-      //   pswd: pswd
-      // }).then((res) => {
-      //   toast.success(res.data.msg);
-      //   nav("/log");
-      // }).catch((err) => {
-      //   toast.error(err.response?.data?.msg || "Something went wrong");
-      // });
+      await axios.post(`http://localhost:4000/api/user/reset/${token}`, {
+        pswd: pswd
+      }).then((res) => {
+        toast.success(res.data.msg);
+        nav("/login");
+      }).catch((err) => {
+        toast.error(err.response?.data?.msg || "Something went wrong");
+      });
 
       // For demo purposes
       console.log("Password reset successfully");

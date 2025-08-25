@@ -101,9 +101,11 @@ exports.updateExhibitorStatus = async (req, res) => {
 };
 
 
+// controllers/exhibitorController.js
+
 exports.getDashboardData = async (req, res) => {
   try {
-    const exhibitorId = req.params.exhibitorId; // ya req.user._id agar auth middleware use ho
+    const exhibitorId = req.params.exhibitorId;
 
     // Exhibitor info
     const exhibitor = await Exhibitor.findById(exhibitorId);
@@ -117,18 +119,21 @@ exports.getDashboardData = async (req, res) => {
       .populate("eventId", "title date")
       .sort({ "eventId.date": 1 });
 
-    const upcomingEvents = bookings.map(b => b.eventId.title);
+    const upcomingEvents = bookings
+      .map(b => b.eventId?.title) // safe access
+      .filter(Boolean); // remove nulls
 
     res.json({
       status: exhibitor.status || "Inactive",
       boothsBooked,
-      upcomingEvents,
+      upcomingEvents: upcomingEvents || [], // always array
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 };
+
 exports.updateExhibitor = async (req, res) => {
   try {
     const exhibitorId = req.params.exhibitorId;

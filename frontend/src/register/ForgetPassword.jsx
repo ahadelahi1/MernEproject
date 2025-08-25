@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import './css/ForgetPassword.css';
+import axios from "axios"; 
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -7,9 +11,13 @@ export default function ForgotPassword() {
   async function Forgot_Password() {
     // Note: Replace this with your actual axios implementation
     try {
-      // const response = await axios.post("http://localhost:4000/api/user/forgot", {
-      //   e: email
-      // });
+      const response = await axios.post("http://localhost:4000/api/user/forgot", {
+        e: email
+      }).then((a)=>{
+       toast.success(a.data.msg)
+      }).catch((a)=>{
+        toast.error(a.data.msg)
+      });
 
       // For demo purposes - replace with your toast implementation
       console.log("Password reset link sent to:", email);
